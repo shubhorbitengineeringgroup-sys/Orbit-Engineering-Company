@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="bg-mpudcl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#134e4a"/>
+      <stop offset="100%" stop-color="#062c28"/>
+    </linearGradient>
+    <linearGradient id="teal-wave" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2dd4bf"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#bg-mpudcl)" stroke="#2dd4bf" stroke-width="3"/>
+  <rect x="34" y="46" width="10" height="26" rx="1" fill="#99f6e4" opacity="0.75"/>
+  <rect x="46" y="36" width="12" height="36" rx="1" fill="#ccfbf1" opacity="0.9"/>
+  <rect x="60" y="42" width="14" height="30" rx="1" fill="#5eead4" opacity="0.8"/>
+  <rect x="76" y="50" width="10" height="22" rx="1" fill="#99f6e4" opacity="0.7"/>
+  <rect x="50" y="42" width="4" height="4" fill="#0d9488"/>
+  <rect x="50" y="50" width="4" height="4" fill="#0d9488"/>
+  <rect x="64" y="48" width="4" height="4" fill="#0f766e"/>
+  <path d="M26 76 C40 68 55 84 72 74 C82 68 90 74 94 77 C90 84 75 88 60 88 C45 88 32 82 26 76 Z" fill="url(#teal-wave)"/>
+  <text x="60" y="104" font-size="8" font-family="sans-serif" font-weight="bold" fill="#e6fffa" text-anchor="middle" letter-spacing="1">MPUDCL BHOPAL</text>
+</svg>

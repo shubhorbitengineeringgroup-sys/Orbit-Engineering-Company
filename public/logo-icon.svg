@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="orbitGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0073bc" />
+      <stop offset="100%" stop-color="#38bdf8" />
+    </linearGradient>
+    <linearGradient id="dropGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+  </defs>
+  <!-- 3D Orbit Ring -->
+  <ellipse cx="50" cy="50" rx="42" ry="18" stroke="url(#orbitGrad)" stroke-width="6" stroke-dasharray="160 30" transform="rotate(-25 50 50)" />
+  <!-- Center Water Droplet / Core -->
+  <path d="M50 20 C50 20 32 46 32 60 C32 70 40 78 50 78 C60 78 68 70 68 60 C68 46 50 20 50 20 Z" fill="url(#dropGrad)" />
+  <!-- Inner Highlight -->
+  <ellipse cx="44" cy="54" rx="4" ry="8" fill="white" opacity="0.6" transform="rotate(-20 44 54)" />
+</svg>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="bg-wrd" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="dam-wall" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#94a3b8"/>
+      <stop offset="100%" stop-color="#64748b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#bg-wrd)" stroke="#38bdf8" stroke-width="3"/>
+  <path d="M34 46 L86 46 L80 74 L40 74 Z" fill="url(#dam-wall)"/>
+  <rect x="44" y="48" width="6" height="16" rx="1" fill="#0284c7"/>
+  <rect x="54" y="48" width="6" height="16" rx="1" fill="#0284c7"/>
+  <rect x="64" y="48" width="6" height="16" rx="1" fill="#0284c7"/>
+  <path d="M42 70 Q60 88 78 70" stroke="#38bdf8" stroke-width="4" fill="none"/>
+  <path d="M32 78 Q60 94 88 78" stroke="#7dd3fc" stroke-width="2.5" fill="none"/>
+  <text x="60" y="104" font-size="7.5" font-family="sans-serif" font-weight="bold" fill="#bae6fd" text-anchor="middle" letter-spacing="0.5">MP WRD IRRIGATION</text>
+</svg>

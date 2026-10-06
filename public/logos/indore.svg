@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="bg-indore" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#065f46"/>
+      <stop offset="100%" stop-color="#022c22"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#bg-indore)" stroke="#10b981" stroke-width="3"/>
+  <circle cx="60" cy="50" r="20" fill="#047857" stroke="#6ee7b7" stroke-width="1.5"/>
+  <path d="M60 36 C60 36 50 48 50 56 A10 10 0 0 0 70 56 C70 48 60 36 60 36 Z" fill="#38bdf8"/>
+  <path d="M60 54 Q66 48 66 58 Q60 58 60 54 Z" fill="#ffffff" opacity="0.75"/>
+  <path d="M44 68 Q60 62 76 68 Q60 76 44 68 Z" fill="#34d399"/>
+  <path d="M32 78 Q60 70 88 78 Q60 84 32 78 Z" fill="#10b981"/>
+  <text x="60" y="103" font-size="7.5" font-family="sans-serif" font-weight="bold" fill="#a7f3d0" text-anchor="middle" letter-spacing="0.5">INDORE DISTRICT</text>
+</svg>

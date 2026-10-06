@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="bg-bmc" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#172554"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#bg-bmc)" stroke="#eab308" stroke-width="3"/>
+  <circle cx="60" cy="60" r="49" fill="none" stroke="#fde047" stroke-width="1" stroke-dasharray="4 2"/>
+  <path d="M40 52 Q60 30 80 52 L80 66 Q60 58 40 66 Z" fill="#fbbf24" opacity="0.9"/>
+  <path d="M46 54 Q60 38 74 54 L74 64 Q60 58 46 64 Z" fill="#1e3a8a"/>
+  <path d="M34 72 Q47 64 60 72 Q73 80 86 72" stroke="#60a5fa" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M36 80 Q48 74 60 80 Q72 86 84 80" stroke="#93c5fd" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <text x="60" y="103" font-size="8" font-family="sans-serif" font-weight="bold" fill="#fef08a" text-anchor="middle" letter-spacing="0.5">BHOPAL BMC</text>
+</svg>
