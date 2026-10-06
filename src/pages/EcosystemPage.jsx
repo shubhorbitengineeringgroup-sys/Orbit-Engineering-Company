@@ -3,11 +3,12 @@ import { ArrowDown, ArrowRight, Cpu, Droplets, ExternalLink, Globe2, Info, Landm
 import { siteConfig } from '../config/siteConfig';
 import { ecosystemClients, ecosystemPartners, clientGroups, partnerGroups, industryStories } from '../data/ecosystem';
 import { ImageViewer, MotionPhoto, SectionHeading } from '../components/VisualSystem';
+import PageLink from '../components/PageLink';
+import ResponsiveImage, { responsiveImageProps } from '../components/ResponsiveImage';
 import '../styles/ecosystem.css';
 import '../styles/ecosystem-interactions.css';
 
 const COMMUNITY_IMAGE = '/images/design-v2/ecosystem-riverfront.webp';
-const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' });
 const websiteLinkProps = entry => ({ href: entry.website, target: '_blank', rel: 'noopener noreferrer', 'aria-label': `Visit ${entry.name} official website (opens in a new tab)` });
 
 function EcosystemProfile({ entry, onClose }) {
@@ -27,10 +28,10 @@ function EcosystemProfile({ entry, onClose }) {
   }, []);
   return <dialog ref={dialog} className="ecosystem-profile" aria-labelledby="ecosystem-profile-title" onCancel={event => { event.preventDefault(); onClose(); }} onClick={event => { if (event.target === event.currentTarget) onClose(); }}>
     <div className="ecosystem-profile-scene">
-      <img src={isPartner ? entry.image : entry.group === 'Private & corporate' ? '/images/pump-house-rehbpR99.jpg' : '/images/intake-well-BztrG-Xc.jpg'} alt="" />
+      <ResponsiveImage src={isPartner ? entry.image : entry.group === 'Private & corporate' ? '/images/pump-house-rehbpR99.jpg' : '/images/intake-well-BztrG-Xc.jpg'} alt="" loading="eager" />
       <span className="visual-eyebrow">{isPartner ? 'TECHNOLOGY & MANUFACTURING PARTNER' : 'OUR CLIENT ECOSYSTEM'}</span>
       <button type="button" aria-label="Close ecosystem profile" onClick={onClose}><X size={20} /></button>
-      <div className="ecosystem-profile-logo"><img src={entry.logo} alt={`${entry.name} logo`} /></div>
+      <div className="ecosystem-profile-logo"><ResponsiveImage src={entry.logo} alt={`${entry.name} logo`} /></div>
     </div>
     <div className="ecosystem-profile-body">
       <span className="ecosystem-profile-group">{entry.group}</span>
@@ -67,7 +68,7 @@ function ClientTile({ entry, onOpen, index }) {
   };
   return <div className="ecosystem-client-tile reveal-up" data-ecosystem-id={entry.id} style={{ '--tile-delay': `${index % 4 * 55}ms` }}>
     <Tile ref={surface} className="ecosystem-card-link" {...(entry.website ? websiteLinkProps(entry) : { type: 'button', 'aria-label': `View ${entry.name} engineering scope`, onClick: () => onOpen(entry) })} onPointerMove={move} onPointerLeave={() => cancelAnimationFrame(frame.current)}>
-      <span className="ecosystem-client-emblem"><img src={entry.logo} alt="" loading="lazy" decoding="async" /></span>
+      <span className="ecosystem-client-emblem"><ResponsiveImage src={entry.logo} alt="" loading="lazy" /></span>
       <span className="ecosystem-client-name"><small>{entry.sector}</small><strong>{entry.name}</strong></span>
       {entry.website ? <ExternalLink className="ecosystem-client-chevron" size={16} aria-hidden="true" /> : <Info className="ecosystem-client-chevron" size={16} aria-hidden="true" />}
       <span className="ecosystem-client-ripple" aria-hidden="true" />
@@ -81,7 +82,7 @@ function PartnerTile({ entry, onOpen, onPreview, onLeave, active, index }) {
   const Tile = entry.website ? 'a' : 'button';
   return <div className="ecosystem-partner-tile reveal-up" data-ecosystem-id={entry.id} style={{ '--tile-delay': `${index % 3 * 70}ms` }}>
     <Tile className={`ecosystem-card-link ${active ? 'is-active' : ''}`} {...(entry.website ? websiteLinkProps(entry) : { type: 'button', 'aria-label': `View ${entry.name} technology capabilities`, onClick: () => { onPreview(entry.id, true); onOpen(entry); } })} onPointerEnter={event => { if (event.pointerType === 'mouse') onPreview(entry.id); }} onPointerLeave={onLeave} onFocus={() => onPreview(entry.id, true)}>
-      <span className="ecosystem-partner-logo-plate"><img src={entry.logo} alt="" loading="lazy" decoding="async" /></span>
+      <span className="ecosystem-partner-logo-plate"><ResponsiveImage src={entry.logo} alt="" loading="lazy" /></span>
       <span className="ecosystem-partner-module-copy"><small>{entry.category}</small><strong>{entry.name}</strong><span>{entry.origin}</span></span>
       <span className="ecosystem-partner-node" aria-hidden="true">{entry.website ? <ExternalLink size={13} /> : <Info size={14} />}</span>
       <span className="ecosystem-partner-connection" aria-hidden="true" />
@@ -93,36 +94,46 @@ function PartnerTile({ entry, onOpen, onPreview, onLeave, active, index }) {
 function PartnerPreview({ entry, onOpen }) {
   const Brand = entry?.website ? 'a' : 'div';
   const stage = useRef(null);
+  const companionImage = entry?.group === 'Automation & data' ? '/images/pump-house-rehbpR99.jpg'
+    : entry?.group === 'Water & mechanical' ? '/images/service_wtp.jpg'
+      : entry?.image === '/images/flow-meter-DSWy7kTd.jpg' ? '/images/electro-mech-BjrTidAv.jpg' : '/images/flow-meter-DSWy7kTd.jpg';
   const [scene, setScene] = useState({ current: entry?.image, previous: null });
+  const [inView, setInView] = useState(false);
   useEffect(() => {
-    let preloaded = false;
+    if (!('IntersectionObserver' in window)) { setInView(true); return; }
     const observer = new IntersectionObserver(([item]) => {
       stage.current?.classList.toggle('is-in-view', item.isIntersecting);
-      if (item.isIntersecting && !preloaded) {
-        preloaded = true;
-        [...new Set(ecosystemPartners.map(partner => partner.image))].forEach(src => { const image = new Image(); image.src = src; });
-      }
+      if (item.isIntersecting) setInView(true);
     }, { threshold: .1 });
     observer.observe(stage.current);
     return () => observer.disconnect();
   }, []);
   useEffect(() => {
-    if (!entry?.image) return;
+    if (!entry?.image || !inView || scene.current === entry.image) return;
+    if (navigator.connection?.saveData || ['slow-2g', '2g'].includes(navigator.connection?.effectiveType) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setScene({ current: entry.image, previous: null });
+      return;
+    }
     let cancelled = false;
     const image = new Image();
     image.onload = () => {
       if (!cancelled) setScene(current => current.current === entry.image ? current : { current: entry.image, previous: current.current });
     };
-    image.src = entry.image;
+    const responsive = responsiveImageProps(entry.image);
+    if (responsive.sizes) image.sizes = responsive.sizes;
+    if (responsive.srcSet) image.srcset = responsive.srcSet;
+    image.src = responsive.src;
     return () => { cancelled = true; };
-  }, [entry?.image]);
-  return <div ref={stage} className="ecosystem-technology-stage">
+  }, [entry?.image, inView]);
+  return <div className="ecosystem-technology-collage">
+    <div className="ecosystem-technology-orbits" aria-hidden="true"><span /><span /><i /></div>
+    <div ref={stage} className="ecosystem-technology-stage">
     {entry ? <>
-      {scene.previous && <div className="ecosystem-technology-photo ecosystem-technology-photo--previous" aria-hidden="true"><img src={scene.previous} alt="" /></div>}
+      {scene.previous && <div className="ecosystem-technology-photo ecosystem-technology-photo--previous" aria-hidden="true"><ResponsiveImage src={scene.previous} alt="" /></div>}
       <MotionPhoto key={scene.current} src={scene.current} alt={`${entry.category} — related engineering imagery`} className="ecosystem-technology-photo" />
       <div className="ecosystem-technology-shade" aria-hidden="true" />
       <div className="ecosystem-technology-topline"><span><Cpu size={14} /> TECHNOLOGY IN FOCUS</span><span className="ecosystem-technology-signal" aria-hidden="true"><i /><i /><i /></span></div>
-      <Brand key={`${entry.id}-brand`} className="ecosystem-technology-brand" {...(entry.website ? websiteLinkProps(entry) : {})}><img src={entry.logo} alt={`${entry.name} logo`} /></Brand>
+      <Brand key={`${entry.id}-brand`} className="ecosystem-technology-brand" {...(entry.website ? websiteLinkProps(entry) : {})}><ResponsiveImage src={entry.logo} alt={`${entry.name} logo`} loading="lazy" /></Brand>
       <div key={`${entry.id}-copy`} className="ecosystem-technology-content">
         <span className="ecosystem-technology-origin"><Globe2 size={14} /> {entry.origin}</span>
         <h3>{entry.category}</h3><p>{entry.name}</p>
@@ -131,6 +142,11 @@ function PartnerPreview({ entry, onOpen }) {
       <svg key={`${entry.id}-trace`} className="ecosystem-technology-circuit" viewBox="0 0 480 620" preserveAspectRatio="none" aria-hidden="true"><path d="M0 180H24L50 206V500L80 530H200" /><path d="M480 280H449L428 301V577H255" /><circle cx="200" cy="530" r="3" /><circle cx="255" cy="577" r="3" /></svg>
       <span className="ecosystem-technology-image-note">Engineering imagery</span>
     </> : <div className="ecosystem-technology-idle"><Cpu size={38} /><h3>A connected world<br />of technology.</h3><p>Adjust your search to explore our partners.</p></div>}
+    </div>
+    {entry && <>
+      <div className="ecosystem-technology-inset" aria-hidden="true"><ResponsiveImage src={companionImage} alt="" loading="lazy" sizes="(max-width: 700px) 150px, 240px" /><span><Droplets size={13} /> Connected in the field</span></div>
+      <span className="ecosystem-technology-float"><span><Cpu size={19} /></span><span><strong>From field to control.</strong><small>Expertise working together</small></span></span>
+    </>}
   </div>;
 }
 
@@ -176,7 +192,7 @@ export default function EcosystemPage({ onOpenQuote }) {
             <span className="visual-eyebrow">CLIENTS & TECHNOLOGY PARTNERS</span>
             <h1>Shared ambition.<br /><span>Lasting impact.</span></h1>
             <p>The people, organisations and technology<br />{' '}connecting water to a better tomorrow.</p>
-            <div><button type="button" onClick={() => scrollTo('our-ecosystem')} className="visual-button">Meet our clients <ArrowDown size={17} /></button><button type="button" onClick={() => scrollTo('technology-partners')} className="ecosystem-hero-link">Technology partners <ArrowRight size={18} /></button></div>
+            <div><a href="#our-ecosystem" className="visual-button">Meet our clients <ArrowDown size={17} /></a><a href="#technology-partners" className="ecosystem-hero-link">Technology partners <ArrowRight size={18} /></a></div>
           </div>
           <div className="ecosystem-hero-aside"><span>COMMUNITIES<br />CONNECTED<br />BY WATER.</span><div><Waves size={24} /><small>A vision for<br />a better tomorrow.</small></div></div>
         </div>
@@ -185,8 +201,8 @@ export default function EcosystemPage({ onOpenQuote }) {
 
       <nav className="ecosystem-pathways" aria-label="Explore our ecosystem"><div className="visual-container">
         <span>CONNECTED BY ENGINEERING</span>
-        <button type="button" onClick={() => scrollTo('our-ecosystem')}><span className="ecosystem-pathway-icon"><Landmark size={23} /></span><span><strong>Our clients</strong><small>22 organisations · Shared progress</small></span><ArrowDown size={18} /></button>
-        <button type="button" onClick={() => scrollTo('technology-partners')}><span className="ecosystem-pathway-icon"><Cpu size={23} /></span><span><strong>Technology partners</strong><small>17 brands · Connected expertise</small></span><ArrowDown size={18} /></button>
+        <a href="#our-ecosystem"><span className="ecosystem-pathway-icon"><Landmark size={23} /></span><span><strong>Our clients</strong><small>22 organisations · Shared progress</small></span><ArrowDown size={18} /></a>
+        <a href="#technology-partners"><span className="ecosystem-pathway-icon"><Cpu size={23} /></span><span><strong>Technology partners</strong><small>17 brands · Connected expertise</small></span><ArrowDown size={18} /></a>
       </div></nav>
 
       <section className="visual-section visual-container ecosystem-public" id="our-ecosystem" aria-labelledby="ecosystem-clients-title">
@@ -199,7 +215,7 @@ export default function EcosystemPage({ onOpenQuote }) {
         <div className="ecosystem-client-directory">
           {clientGroup === clientGroups[0] && !clientSearch.trim() && <div className="ecosystem-directory-feature reveal-up">
             <MotionPhoto src="/images/intake-well-BztrG-Xc.jpg" alt="Intake water tower and bridge across a calm reservoir" className="ecosystem-directory-source"><div className="ecosystem-photo-label"><span className="visual-eyebrow">FROM SOURCE TO COMMUNITY</span><h3>Every connection<br />starts somewhere.</h3></div></MotionPhoto>
-            <MotionPhoto src="/images/service_wtp.jpg" alt="Circular water treatment tanks beside a green landscape" className="ecosystem-directory-inset"><span><Droplets size={15} /> Water, thoughtfully engineered.</span></MotionPhoto>
+            <MotionPhoto src="/images/service_wtp.jpg" alt="Circular water treatment tanks beside a green landscape" className="ecosystem-directory-inset" sizes="(max-width: 700px) 260px, 300px"><span><Droplets size={15} /> Water, thoughtfully engineered.</span></MotionPhoto>
           </div>}
           {visibleClients.map((client, index) => <ClientTile key={client.id} entry={client} index={index} onOpen={setProfile} />)}
         </div>
@@ -231,20 +247,21 @@ export default function EcosystemPage({ onOpenQuote }) {
             <FilterBar groups={partnerGroups} selected={partnerGroup} onSelect={setPartnerGroup} entries={ecosystemPartners} allLabel="Filter technology partners by capability" />
             <label className="ecosystem-search"><Search size={17} /><span className="ecosystem-sr-only">Search partners by name or technology</span><input type="search" value={partnerSearch} onChange={event => setPartnerSearch(event.target.value)} placeholder="Find a partner or technology" />{partnerSearch && <button type="button" onClick={() => setPartnerSearch('')} aria-label="Clear partner search"><X size={15} /></button>}</label>
           </div>
-          <div className="ecosystem-partner-showroom">
+          <div className="ecosystem-directory-status ecosystem-partner-status"><p aria-live="polite">Showing <strong>{visiblePartners.length}</strong> of {ecosystemPartners.length} partners</p><span className="ecosystem-desktop-hint">Hover to preview · Click to visit website</span><span className="ecosystem-touch-hint">Tap logo to visit · ⓘ for capabilities</span></div>
+          <div className={`ecosystem-partner-showroom${visiblePartners.length > 0 && visiblePartners.length <= 3 ? ' ecosystem-partner-showroom--focused' : ''}`} style={{ '--focused-columns': Math.max(1, Math.min(3, visiblePartners.length)) }}>
             <PartnerPreview entry={previewPartner} onOpen={setProfile} />
             <div className="ecosystem-partner-directory-wrap">
-              <div className="ecosystem-directory-status"><p aria-live="polite">Showing <strong>{visiblePartners.length}</strong> of {ecosystemPartners.length} partners</p><span className="ecosystem-desktop-hint">Hover to preview · Click to visit website</span><span className="ecosystem-touch-hint">Tap logo to visit website</span></div>
-              <div className="ecosystem-partner-directory">{visiblePartners.map((partner, index) => <PartnerTile key={partner.id} entry={partner} index={index} active={previewPartner?.id === partner.id} onPreview={previewTechnology} onLeave={cancelPreview} onOpen={setProfile} />)}</div>
+              <div className="ecosystem-partner-directory">{visiblePartners.slice(0, 6).map((partner, index) => <PartnerTile key={partner.id} entry={partner} index={index} active={previewPartner?.id === partner.id} onPreview={previewTechnology} onLeave={cancelPreview} onOpen={setProfile} />)}</div>
               {!visiblePartners.length && <div className="ecosystem-empty"><Search size={26} /><h3>No matching partners</h3><p>Try a brand name or a technology such as PLC, flow or level.</p><button type="button" onClick={() => { setPartnerSearch(''); setPartnerGroup(partnerGroups[0]); }}>Show all 17 partners <ArrowRight size={16} /></button></div>}
             </div>
           </div>
+          {visiblePartners.length > 6 && <div className="ecosystem-partner-continuation">{visiblePartners.slice(6).map((partner, index) => <PartnerTile key={partner.id} entry={partner} index={index + 6} active={previewPartner?.id === partner.id} onPreview={previewTechnology} onLeave={cancelPreview} onOpen={setProfile} />)}</div>}
         </div>
       </section>
 
       <section className="visual-section visual-container ecosystem-connect">
         <div className="ecosystem-marketplace reveal-up"><div className="ecosystem-marketplace-brand"><span>india<span>MART</span></span><small>OUR MARKETPLACE PRESENCE</small></div><div><span className="visual-eyebrow">ANOTHER WAY TO CONNECT</span><h2>Explore our product range.</h2><p>Find Orbit Engineering Solutions on IndiaMART.</p></div><a href={siteConfig.company.contact.indiamart} target="_blank" rel="noopener noreferrer" className="visual-button visual-button--secondary">Visit our store <ExternalLink size={16} /></a></div>
-        <div className="ecosystem-partnership reveal-up"><div className="ecosystem-partnership-orbit" aria-hidden="true"><img src={COMMUNITY_IMAGE} alt="" /><span /><span /></div><div><span className="visual-eyebrow">A SHARED VISION</span><h2>The next connection<br />could start with you.</h2><button type="button" onClick={onOpenQuote} className="visual-button">Discuss a partnership <ArrowRight size={18} /></button></div></div>
+        <div className="ecosystem-partnership reveal-up"><div className="ecosystem-partnership-orbit" aria-hidden="true"><ResponsiveImage src={COMMUNITY_IMAGE} alt="" loading="lazy" sizes="400px" /><span /><span /></div><div><span className="visual-eyebrow">A SHARED VISION</span><h2>The next connection<br />could start with you.</h2><PageLink page="contact" onAction={onOpenQuote} className="visual-button">Discuss a partnership <ArrowRight size={18} /></PageLink></div></div>
       </section>
       {profile && <EcosystemProfile entry={profile} onClose={() => setProfile(null)} />}
       <ImageViewer images={galleryImages} index={galleryIndex} onIndexChange={setGalleryIndex} onClose={() => setGalleryIndex(null)} />

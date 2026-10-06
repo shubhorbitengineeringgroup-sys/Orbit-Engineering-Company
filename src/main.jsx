@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+const root = document.getElementById('root');
+const app = <React.StrictMode><App /></React.StrictMode>;
+// Production pages already contain the same full React tree as the browser.
+if (root.firstElementChild) ReactDOM.hydrateRoot(root, app);
+else ReactDOM.createRoot(root).render(app);

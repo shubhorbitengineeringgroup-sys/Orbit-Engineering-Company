@@ -5,6 +5,7 @@ import {
   Download, MessageSquare, ArrowRight, Activity, Eye
 } from 'lucide-react';
 import { siteConfig } from '../config/siteConfig';
+import { assetPath } from '../config/deployment';
 import { useScrollReveal } from '../hooks/useAnimations';
 
 // Carousel for featured products at top
@@ -41,7 +42,7 @@ function ProductModal({ item, onClose, onQuote }) {
         {/* Image */}
         <div className="relative h-52 overflow-hidden bg-slate-900">
           <img
-            src={item.image}
+            src={assetPath(item.image)}
             alt={item.name}
             className="w-full h-full object-cover opacity-90"
             onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1581093588401-fbb62a02f120?auto=format&fit=crop&w=800&q=80'; }}
@@ -162,7 +163,7 @@ export default function ProductsPage({ onOpenQuote }) {
             <div className="sm:w-2/5 relative overflow-hidden img-zoom-wrap">
               <img
                 key={carouselIdx}
-                src={featuredProduct?.image}
+                src={assetPath(featuredProduct?.image)}
                 alt={featuredProduct?.name}
                 className="w-full h-full object-cover opacity-90 transition-all duration-700"
                 onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1581093588401-fbb62a02f120?auto=format&fit=crop&w=800&q=80'; }}
@@ -265,7 +266,7 @@ export default function ProductsPage({ onOpenQuote }) {
                 {/* Image */}
                 <div className="relative aspect-[4/3] overflow-hidden bg-slate-900 img-zoom-wrap">
                   <img
-                    src={item.image}
+                    src={assetPath(item.image)}
                     alt={item.name}
                     onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1581093588401-fbb62a02f120?auto=format&fit=crop&w=800&q=80'; }}
                     className="w-full h-full object-cover opacity-95 group-hover:opacity-100"

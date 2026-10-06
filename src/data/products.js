@@ -128,4 +128,3 @@ export const PRODUCT_CATEGORIES = [
 ].map((entry, index) => ({ ...entry, number: String(index + 1).padStart(2, '0'), products: entry.products.map(product => ({ ...product, category: entry.name, categoryNumber: String(index + 1).padStart(2, '0') })) }));
 
 export const PRODUCTS = PRODUCT_CATEGORIES.flatMap(category => category.products);
-

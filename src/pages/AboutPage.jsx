@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { ArrowRight, Award, Building2, CheckCircle2, ChevronDown, Expand, Leaf, MapPin, Phone, ShieldCheck, Target, Users, Zap } from 'lucide-react';
 import { siteConfig } from '../config/siteConfig';
 import { SectionHeading, ImageCTA, MotionPhoto, ImageViewer } from '../components/VisualSystem';
+import PageLink from '../components/PageLink';
+import ResponsiveImage from '../components/ResponsiveImage';
+import AboutStory from '../components/AboutStory';
 import '../styles/about.css';
 
 const IMAGES = {
@@ -13,6 +16,9 @@ const IMAGES = {
   automation: '/images/scada-JO4jHDve.jpg',
   pipeline: '/images/pipeline-3e9YAzse.jpg',
   instruments: '/images/electro-mech-BjrTidAv.jpg',
+  storyWater: '/images/design-v2/about-story-water.webp',
+  storyField: '/images/design-v2/about-story-field.webp',
+  storyControl: '/images/design-v2/about-story-control.webp',
 };
 
 const COMMITMENTS = [
@@ -33,27 +39,26 @@ const TABS = [
 const DEPARTMENT_IMAGES = [IMAGES.automation, '/images/network-LUJb9Wxw.jpg', '/images/pump_house.jpg'];
 const CERT_ICONS = [Award, Leaf, ShieldCheck];
 const STORY_CHAPTERS = [
-  { image: IMAGES.aerial, title: 'Water infrastructure', caption: 'From a single source to an entire community.', alt: 'Aerial view of treatment buildings and water basins' },
-  { image: IMAGES.field, title: 'Field engineering', caption: 'Good plans meet careful work on the ground.', alt: 'Engineers installing a water pipeline in an excavated trench' },
-  { image: IMAGES.automation, title: 'Connected systems', caption: 'Bringing the whole water network into focus.', alt: 'A blue-lit water utility SCADA monitoring room' },
+  { image: IMAGES.storyWater, title: 'Water infrastructure', caption: 'From a single source to an entire community.', alt: 'Illustrative aerial scene of turquoise water clarifiers in a landscaped treatment campus', illustrative: true },
+  { image: IMAGES.storyField, title: 'Field engineering', caption: 'Good plans meet careful work on the ground.', alt: 'Illustrative scene of two engineers reviewing water infrastructure plans on a protected walkway', illustrative: true },
+  { image: IMAGES.storyControl, title: 'Connected systems', caption: 'Bringing the whole water network into focus.', alt: 'Illustrative scene of engineers monitoring a water network in a modern control room', illustrative: true },
 ];
 const ABOUT_GALLERY = [
   { src: IMAGES.collaboration, alt: 'Illustrative scene of engineers reviewing plans above a water treatment plant', label: 'Engineering collaboration · Illustrative scene' },
-  { src: IMAGES.field, alt: STORY_CHAPTERS[1].alt, label: 'Field engineering' },
-  { src: IMAGES.aerial, alt: STORY_CHAPTERS[0].alt, label: 'Water infrastructure' },
+  { src: IMAGES.field, alt: 'Engineers installing a water pipeline in an excavated trench', label: 'Field engineering' },
+  { src: IMAGES.aerial, alt: 'Aerial view of treatment buildings and water basins', label: 'Water infrastructure' },
   { src: IMAGES.pumps, alt: 'Blue water pumps and stainless steel piping', label: 'Pumping systems' },
-  { src: IMAGES.automation, alt: STORY_CHAPTERS[2].alt, label: 'Connected water systems' },
+  { src: IMAGES.automation, alt: 'A blue-lit water utility SCADA monitoring room', label: 'Connected water systems' },
   { src: IMAGES.instruments, alt: 'Precision pressure and flow instruments', label: 'Instrumentation and quality' },
   { src: IMAGES.pipeline, alt: 'Transmission pipeline through an open landscape', label: 'Water transmission' },
   { src: IMAGES.treatment, alt: 'Circular treatment clarifiers at sunrise', label: 'Water treatment' },
+  ...STORY_CHAPTERS.map(chapter => ({ src: chapter.image, alt: chapter.alt, label: `${chapter.title} · Illustrative scene` })),
 ];
 
 export default function AboutPage({ onNavigate, onOpenQuote }) {
   const [activeTab, setActiveTab] = useState('certifications');
   const [activeCommitment, setActiveCommitment] = useState(0);
-  const [activeChapter, setActiveChapter] = useState(0);
   const [galleryIndex, setGalleryIndex] = useState(null);
-  const chapter = STORY_CHAPTERS[activeChapter];
   const openImage = (src) => setGalleryIndex(ABOUT_GALLERY.findIndex((image) => image.src === src));
   const company = siteConfig.company;
   const commitment = COMMITMENTS[activeCommitment];
@@ -79,8 +84,8 @@ export default function AboutPage({ onNavigate, onOpenQuote }) {
             <h1 id="about-editorial-title">Better water<br />begins with<br /><span>better thinking.</span></h1>
             <p>Engineering is our craft. A better tomorrow is our purpose. We bring people, ideas and technology together to make water work for everyone.</p>
             <div className="about-editorial__actions">
-              <button className="visual-button" onClick={onOpenQuote}>Build with Orbit <ArrowRight size={18} /></button>
-              <button className="about-editorial__explore" onClick={() => document.getElementById('about-story-title')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' })}>Discover our story <span>↓</span></button>
+              <PageLink page="contact" onNavigate={onNavigate} onAction={onOpenQuote} className="visual-button">Build with Orbit <ArrowRight size={18} /></PageLink>
+              <a className="about-editorial__explore" href="#about-story">Discover our story <span>↓</span></a>
             </div>
             <dl className="about-editorial__facts">
               <div><dt>{company.experience}</dt><dd>Years of<br />engineering experience</dd></div>
@@ -91,13 +96,13 @@ export default function AboutPage({ onNavigate, onOpenQuote }) {
           <div className="about-editorial__collage">
             <svg className="about-editorial__orbits" viewBox="0 0 700 700" aria-hidden="true"><ellipse cx="350" cy="350" rx="310" ry="270" /><ellipse cx="350" cy="350" rx="280" ry="325" /><circle cx="350" cy="25" r="5" /><circle cx="660" cy="350" r="4" /></svg>
             <figure className="about-editorial__portrait">
-              <MotionPhoto src={IMAGES.collaboration} alt={ABOUT_GALLERY[0].alt} loading="eager">
+              <MotionPhoto src={IMAGES.collaboration} alt={ABOUT_GALLERY[0].alt} loading="eager" sizes="(max-width: 380px) 340px, (max-width: 560px) calc(100vw - 67px), (max-width: 800px) 530px, (max-width: 1100px) 460px, 620px">
                 <button className="about-photo-open" onClick={() => openImage(IMAGES.collaboration)} aria-label="View engineering collaboration image"><span><Expand size={18} /></span></button>
               </MotionPhoto>
               <figcaption>Ideas into action.</figcaption>
             </figure>
             <figure className="about-editorial__inset">
-              <MotionPhoto src={IMAGES.field} alt={STORY_CHAPTERS[1].alt} loading="eager">
+              <MotionPhoto src={IMAGES.field} alt={ABOUT_GALLERY[1].alt} loading="eager" fetchPriority="auto" sizes="(max-width: 560px) 152px, (max-width: 800px) 220px, (max-width: 1100px) 195px, 230px">
                 <button className="about-photo-open" onClick={() => openImage(IMAGES.field)} aria-label="View field engineering image"><span><Expand size={15} /></span></button>
               </MotionPhoto>
               <figcaption><span>01 / On the ground</span><strong>Built by people.<br />Made for people.</strong></figcaption>
@@ -108,40 +113,14 @@ export default function AboutPage({ onNavigate, onOpenQuote }) {
         </div>
       </section>
 
-      <section className="visual-section visual-container about-story" aria-labelledby="about-story-title">
-        <div className="about-story-gallery reveal-right">
-          <div className="about-story-gallery__picture">
-            <MotionPhoto key={chapter.image} src={chapter.image} alt={chapter.alt}>
-              <button className="about-photo-open" onClick={() => openImage(chapter.image)} aria-label={`View ${chapter.title.toLowerCase()} image`}><span><Expand size={18} /></span></button>
-            </MotionPhoto>
-            <div className="about-story-gallery__caption"><span>0{activeChapter + 1} / {chapter.title}</span><strong>{chapter.caption}</strong></div>
-          </div>
-          <div className="about-story-gallery__chapters" role="group" aria-label="Explore our engineering story">
-            {STORY_CHAPTERS.map((item, index) => <button key={item.title} aria-pressed={activeChapter === index} onClick={() => setActiveChapter(index)}>
-              <span className="about-story-gallery__thumb"><img src={item.image} alt="" loading="lazy" /></span>
-              <span><small>0{index + 1}</small><strong>{item.title}</strong></span>
-            </button>)}
-          </div>
-        </div>
-        <div className="about-story__copy reveal-left">
-          <span className="visual-eyebrow">Our story</span>
-          <h2 id="about-story-title">Rooted in experience.<br /><span className="visual-title-accent">Driven by possibility.</span></h2>
-          <p>Founded in {company.founded}, {company.name} brings water treatment and industrial automation together under one roof.</p>
-          <p>From municipal plants to smart distribution networks, our teams turn complex infrastructure into dependable everyday water access.</p>
-          <div className="about-story__facts">
-            <span><MapPin size={18} /> {company.headquarters}</span>
-            <span><ShieldCheck size={18} /> Quality, environment &amp; safety certified</span>
-          </div>
-          <button className="about-text-link" onClick={() => onNavigate('ecosystem')}>See who we work with <ArrowRight size={18} /></button>
-        </div>
-      </section>
+      <AboutStory company={company} chapters={STORY_CHAPTERS} onOpenImage={openImage} onNavigate={onNavigate} />
 
       <section className="about-purpose visual-section" aria-label="Our mission and vision">
         <div className="visual-container">
           <SectionHeading eyebrow="Our purpose" title={<>Cleaner water.<br /><span className="visual-title-accent">A shared future.</span></>} description="Every project starts with the same belief: good engineering should make life better." />
           <div className="about-purpose__grid">
             <article className="about-purpose-card reveal-up">
-              <img src={IMAGES.pipeline} alt="Water transmission pipeline stretching across a landscape" loading="lazy" />
+              <ResponsiveImage src={IMAGES.pipeline} alt="Water transmission pipeline stretching across a landscape" loading="lazy" sizes="(max-width: 560px) 600px, 660px" />
               <div className="about-purpose-card__copy">
                 <span className="about-purpose-card__label"><Target size={18} /> Our mission</span>
                 <h3>Safe water.<br />Within reach.</h3>
@@ -149,7 +128,7 @@ export default function AboutPage({ onNavigate, onOpenQuote }) {
               </div>
             </article>
             <article className="about-purpose-card reveal-up" style={{ transitionDelay: '100ms' }}>
-              <img src={IMAGES.automation} alt="Engineers overseeing connected water systems in a SCADA room" loading="lazy" />
+              <ResponsiveImage src={IMAGES.automation} alt="Engineers overseeing connected water systems in a SCADA room" loading="lazy" sizes="(max-width: 560px) 600px, 660px" />
               <div className="about-purpose-card__copy">
                 <span className="about-purpose-card__label"><Zap size={18} /> Our vision</span>
                 <h3>Smarter systems.<br />Lasting impact.</h3>
@@ -170,7 +149,7 @@ export default function AboutPage({ onNavigate, onOpenQuote }) {
         <div className="about-leadership">
           {company.leadership.map((leader, index) => (
             <article className="about-leader reveal-up" key={leader.name} style={{ transitionDelay: `${index * 100}ms` }}>
-              <div className="about-leader__portrait"><img src={leader.image} alt={leader.name} loading="lazy" /></div>
+              <div className="about-leader__portrait"><ResponsiveImage src={leader.image} alt={leader.name} loading="lazy" /></div>
               <div className="about-leader__copy">
                 <span className="visual-eyebrow">{leader.role}</span>
                 <h3>{leader.name}</h3>
@@ -207,7 +186,7 @@ export default function AboutPage({ onNavigate, onOpenQuote }) {
             </div>}
             {activeTab === 'departments' && <div className="about-card-grid">
               {company.departments.map((department, index) => <article className="about-department" key={department.name}>
-                <div className="about-department__image"><img src={DEPARTMENT_IMAGES[index]} alt={department.name} loading="lazy" /><span className="visual-glass"><Users size={15} /> {department.count}</span></div>
+                <div className="about-department__image"><ResponsiveImage src={DEPARTMENT_IMAGES[index]} alt={department.name} loading="lazy" sizes="(max-width: 560px) 520px, (max-width: 800px) 440px, 430px" /><span className="visual-glass"><Users size={15} /> {department.count}</span></div>
                 <div className="about-department__copy"><h3>{department.name}</h3><p>{department.desc}</p></div>
               </article>)}
             </div>}
@@ -226,7 +205,7 @@ export default function AboutPage({ onNavigate, onOpenQuote }) {
 
       <section className="visual-section visual-container about-commitments" aria-label="Our engineering commitments">
         <div className="about-commitments__visual reveal-right">
-          <img key={commitment.image} src={commitment.image} alt={commitment.alt} loading="lazy" />
+          <ResponsiveImage key={commitment.image} src={commitment.image} alt={commitment.alt} loading="lazy" />
           <button className="about-commitments__zoom" onClick={() => openImage(commitment.image)} aria-label="View current engineering image"><Expand size={19} /></button><div className="about-commitments__caption"><span>Our promise to every project</span><strong>Designed for trust.<br />Built to last.</strong></div>
           <span className="about-commitments__seal visual-glass"><ShieldCheck size={24} /><span>Asset integrity<br /><strong>From day one</strong></span></span>
         </div>

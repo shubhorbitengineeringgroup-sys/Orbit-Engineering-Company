@@ -1,0 +1,98 @@
+name: GitHub Pages manual build or publish
+
+# Committing/pushing this file never deploys the website.
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Publish the checked artifact to the configured Pages site'
+        required: true
+        type: boolean
+        default: false
+      indexable:
+        description: 'Allow indexing (enable only for the chosen public production site)'
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-manual
+  cancel-in-progress: false
+
+jobs:
+  build:
+    # An operator must dispatch the repository's default branch.
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      # configure-pages reads site metadata; private repositories require this.
+      pages: read
+    outputs:
+      pages_url: ${{ steps.pages.outputs.base_url }}
+    steps:
+      - name: Check out reviewed source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Read the existing GitHub Pages configuration
+        id: pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+        with:
+          # Configure Settings > Pages yourself when ready; no PAT or setup mutation.
+          enablement: false
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Reject known production dependency vulnerabilities
+        run: npm audit --omit=dev --audit-level=low
+      - name: Build and validate Pages files
+        env:
+          SITE_ORIGIN: ${{ steps.pages.outputs.origin }}
+          SITE_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          VITE_INDEXABLE: ${{ inputs.indexable && 'true' || 'false' }}
+        run: >-
+          node scripts/build-target.mjs
+          --target=github-pages
+          --site-url="$SITE_ORIGIN"
+          --base-path="${SITE_BASE_PATH:-/}"
+          --out-dir=.qa/pages-release
+      - name: Retain a build for inspection without publishing
+        if: ${{ !inputs.publish }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pages-checked-build
+          path: .qa/pages-release/
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 7
+      - name: Prepare the deployment artifact
+        if: ${{ inputs.publish }}
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: .qa/pages-release/
+          include-hidden-files: true
+
+  deploy:
+    if: ${{ inputs.publish }}
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ needs.build.outputs.pages_url }}
+    steps:
+      - name: Publish the checked artifact
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

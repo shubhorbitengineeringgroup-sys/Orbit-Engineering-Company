@@ -1,5 +1,7 @@
+import ResponsiveImage from './ResponsiveImage';
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowRight, Menu, MessageSquare, X } from 'lucide-react';
+import PageLink from './PageLink';
 
 // ─── FIXED NAVBAR HEIGHT CONSTANTS ────────────────────────────────────────────
 // These values MUST match the actual rendered py-* values below so the hero's
@@ -26,8 +28,9 @@ export default function Navbar({ activePage = 'home', onNavigate, onOpenQuote })
   const [scrolled, setScrolled]       = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButton = useRef(null);
+  const menuDisclosure = useRef(null);
   const activeSection = NAV_LINKS.find(link => link.page === activePage)?.label;
-  const navigate = (page) => { setMenuOpen(false); onNavigate?.(page); };
+  const closeMenu = () => { setMenuOpen(false); if (menuDisclosure.current) menuDisclosure.current.open = false; };
 
   // ── Scroll: detect scrolled state for bg switch ──────────────────────────
   useEffect(() => {
@@ -39,12 +42,12 @@ export default function Navbar({ activePage = 'home', onNavigate, onOpenQuote })
   }, []);
 
   useEffect(() => {
-    setMenuOpen(false);
+    closeMenu();
   }, [activePage]);
 
   useEffect(() => {
     if (!menuOpen) return;
-    const close = event => { if (event.key === 'Escape') { setMenuOpen(false); menuButton.current?.focus(); } };
+    const close = event => { if (event.key === 'Escape') { closeMenu(); menuButton.current?.focus(); } };
     window.addEventListener('keydown', close);
     return () => window.removeEventListener('keydown', close);
   }, [menuOpen]);
@@ -60,15 +63,16 @@ export default function Navbar({ activePage = 'home', onNavigate, onOpenQuote })
       <div className="w-full px-6 sm:px-8 lg:px-[4%] xl:px-[5%] flex items-center gap-2 lg:gap-4">
 
         {/* ══ LEFT: ORBIT LOGO ══ */}
-        <button
-          onClick={() => navigate('home')}
+        <PageLink
+          page="home" onNavigate={onNavigate} onClick={closeMenu}
           aria-label="Orbit Engineering home"
           className="flex items-center gap-2.5 group cursor-pointer select-none text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0073bc] hover:opacity-95 shrink-0"
         >
           <div className="h-9 sm:h-10 lg:h-11 xl:h-12 w-auto flex items-center justify-center shrink-0">
-            <img
-              src="/logo.png"
+            <ResponsiveImage
+              src="/logo.png" sizes="70px"
               alt="Orbit Logo"
+              width="951" height="662" decoding="async"
               className="h-full w-auto object-contain filter drop-shadow-sm group-hover:scale-105 transition-transform"
             />
           </div>
@@ -80,16 +84,16 @@ export default function Navbar({ activePage = 'home', onNavigate, onOpenQuote })
               ENGINEERING COMPANY
             </span>
           </div>
-        </button>
+        </PageLink>
 
         {/* Main page navigation */}
         <nav aria-label="Main navigation" className="hidden lg:flex flex-1 items-center justify-center gap-4 xl:gap-6 2xl:gap-8 min-w-0">
           {NAV_LINKS.map(({ label, page }) => {
             const isActive = label === activeSection;
             return (
-              <button
+              <PageLink
                 key={label}
-                onClick={() => navigate(page)}
+                page={page} onNavigate={onNavigate} onClick={closeMenu}
                 aria-current={isActive ? 'page' : undefined}
                 className={`relative py-1 text-[13px] xl:text-[14px] 2xl:text-[15.5px] tracking-tight transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0073bc] whitespace-nowrap shrink-0 ${
                   isActive
@@ -102,15 +106,15 @@ export default function Navbar({ activePage = 'home', onNavigate, onOpenQuote })
                 {isActive && (
                   <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#0070bb]" />
                 )}
-              </button>
+              </PageLink>
             );
           })}
         </nav>
 
         {/* ══ RIGHT: GET IN TOUCH only (no hamburger) ══ */}
         <div className="ml-auto lg:ml-0 shrink-0">
-          <button
-            onClick={() => onOpenQuote ? onOpenQuote() : onNavigate?.('contact')}
+          <PageLink
+            page="contact" onNavigate={onNavigate} onAction={onOpenQuote}
             aria-label="Get in Touch"
             title="Get in Touch"
             className="inline-flex items-center gap-2 px-3 py-2.5 sm:px-6 sm:py-3 xl:px-7 xl:py-3 rounded-full bg-[#0a233f] hover:bg-[#06192e] text-white text-[12.5px] sm:text-[13px] xl:text-[14px] font-semibold shadow-md transition-all duration-200 hover:scale-[1.02] cursor-pointer whitespace-nowrap"
@@ -118,18 +122,20 @@ export default function Navbar({ activePage = 'home', onNavigate, onOpenQuote })
             <span className="hidden sm:inline">Get in Touch</span>
             <MessageSquare className="sm:hidden w-4 h-4 stroke-[2.4]" />
             <ArrowRight className="hidden sm:inline w-4 h-4 stroke-[2.4]" />
-          </button>
+          </PageLink>
         </div>
 
-        <button ref={menuButton} type="button" className="orbit-menu-toggle lg:hidden" aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={menuOpen} aria-controls="mobile-navigation" onClick={() => setMenuOpen(value => !value)}>
-          {menuOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        <details ref={menuDisclosure} className="orbit-menu-disclosure lg:hidden" onToggle={event => setMenuOpen(event.currentTarget.open)}>
+          <summary ref={menuButton} className="orbit-menu-toggle" aria-label="Toggle navigation menu" aria-controls="mobile-navigation">
+            <Menu className="orbit-menu-open-icon" size={22} /><X className="orbit-menu-close-icon" size={22} />
+          </summary>
+          <nav id="mobile-navigation" className="orbit-mobile-nav" aria-label="Mobile navigation">
+            {NAV_LINKS.map(({ label, page }) => <PageLink key={page} page={page} onNavigate={onNavigate} onClick={closeMenu} aria-current={activePage === page ? 'page' : undefined}>{label}<ArrowRight size={17} /></PageLink>)}
+            <span>Water. People. Planet.</span>
+          </nav>
+        </details>
 
       </div>
-      {menuOpen && <nav id="mobile-navigation" className="orbit-mobile-nav lg:hidden" aria-label="Mobile navigation">
-        {NAV_LINKS.map(({ label, page }) => <button key={page} type="button" onClick={() => navigate(page)} aria-current={activePage === page ? 'page' : undefined}>{label}<ArrowRight size={17} /></button>)}
-        <span>Water. People. Planet.</span>
-      </nav>}
     </header>
   );
 }

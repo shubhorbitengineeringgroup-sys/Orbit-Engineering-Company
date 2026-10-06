@@ -1,10 +1,10 @@
 # 📘 AI & Developer Master Blueprint: Products & Ecosystem Specification
 
-> **Project:** Orbit Engineering Group Website  
-> **Source Asset Folder:** `D:\OES Company\OES IT Projects\Websites\orbit-engineering-group-website\src\assets`  
-> **Target Pages:**  
-> 1. **Ecosystem Page** (`Clients` & `Partners`)  
-> 2. **Products Pages** (22 Categories, 104 Products with Full Descriptions & Specs)  
+> **Project:** Orbit Engineering Group Website\
+> **Source Asset Folder:** `D:\OES Company\OES IT Projects\Websites\orbit-engineering-group-website\src\assets`\
+> **Target Pages:**\
+> 1. **Ecosystem Page** (`Clients` & `Partners`)\
+> 2. **Products Pages** (22 Categories, 104 Products with Full Descriptions & Specs)\
 
 ---
 
@@ -2444,4 +2444,3 @@ The system continuously collects real-time data and sends it to a cloud dashboar
 - Waterproof Armored Cables: Outdoor heavy-duty rating for harsh river environments
 
 ---
-

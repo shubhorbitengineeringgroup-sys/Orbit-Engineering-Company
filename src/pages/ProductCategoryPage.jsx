@@ -1,0 +1,15 @@
+import React from 'react';
+import { assetPath } from '../config/deployment';
+import { ArrowRight, MessageSquare } from 'lucide-react';
+import { siteConfig } from '../config/siteConfig';
+import { PRODUCT_CATEGORIES } from '../data/products';
+import PageLink from '../components/PageLink';
+import '../styles/seo-catalog.css';
+
+export function ProductCategoryDirectory({ onNavigate }) {
+  return <section className="visual-container seo-catalog-directory" aria-labelledby="product-category-heading"><span className="visual-eyebrow">Browse by equipment</span><h2 id="product-category-heading">Engineering product categories</h2><p>Explore equipment specifications and applications, then discuss the right configuration with our Bhopal team.</p><nav aria-label="Product category pages">{PRODUCT_CATEGORIES.map(category => <PageLink key={category.id} page={`/products/${category.id}`} onNavigate={onNavigate}>{category.name}<ArrowRight size={16} /></PageLink>)}</nav></section>;
+}
+
+export default function ProductCategoryPage({ category, onNavigate }) {
+  return <div className="visual-page seo-catalog-page"><header className="visual-container seo-catalog-header"><nav aria-label="Breadcrumb"><PageLink page="home" onNavigate={onNavigate}>Home</PageLink><span>/</span><PageLink page="products" onNavigate={onNavigate}>Products</PageLink><span>/</span><span>{category.name}</span></nav><span className="visual-eyebrow">{siteConfig.company.name} · Bhopal</span><h1>{category.name} in Bhopal</h1><p>{category.tagline}</p><p>Our team helps select and integrate equipment for water infrastructure and industrial applications in Madhya Pradesh. Share the operating conditions, connection requirements and project location to discuss model selection, technical specifications and a quotation.</p><a className="visual-button" href={siteConfig.company.contact.whatsappLink} target="_blank" rel="noopener noreferrer">Discuss your requirements<MessageSquare size={17} /></a></header><section className="visual-container seo-catalog-grid" aria-label={`${category.name} equipment`}>{category.products.map((product, index) => <article id={product.id} key={product.id} className="seo-catalog-product"><div className="seo-catalog-art"><img src={assetPath(product.image)} alt={product.name} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" width="640" height="480" /></div><div><h2>{product.name}</h2>{product.description && <p>{product.description}</p>}{product.features.length > 0 && <><h3>{product.featureLabel}</h3><ul>{product.features.map(feature => <li key={feature}>{feature}</li>)}</ul></>}<a href={`https://wa.me/${siteConfig.company.contact.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(`Hello Orbit Engineering, please share specifications and a quotation for ${product.name}.`)}`} target="_blank" rel="noopener noreferrer">Enquire about {product.name}<ArrowRight size={16} /></a>{product.document && <a href={assetPath(product.document)} target="_blank" rel="noopener noreferrer">Open catalogue PDF<ArrowRight size={16} /></a>}</div></article>)}</section><ProductCategoryDirectory onNavigate={onNavigate} /></div>;
+}

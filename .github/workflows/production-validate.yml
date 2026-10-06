@@ -1,0 +1,73 @@
+name: Production readiness checks
+
+# Validation only. This workflow has no deployment step or publishing credential.
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: readiness-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Validate ${{ matrix.target }} output
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: vercel
+            site_url: https://orbit-ci.example
+            base_path: /
+          - target: github-pages
+            site_url: https://orbit-ci.example
+            base_path: /orbit-test/
+          - target: netlify
+            site_url: https://orbit-ci.example
+            base_path: /
+          - target: cloudflare
+            site_url: https://orbit-ci.example
+            base_path: /
+    env:
+      VITE_INDEXABLE: 'false'
+    steps:
+      - name: Check out reviewed source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Reject known production dependency vulnerabilities
+        run: npm audit --omit=dev --audit-level=low
+      - name: Build and validate the hosting profile
+        env:
+          BUILD_TARGET: ${{ matrix.target }}
+          SITE_ORIGIN: ${{ matrix.site_url }}
+          SITE_BASE_PATH: ${{ matrix.base_path }}
+        run: >-
+          node scripts/build-target.mjs
+          --target="$BUILD_TARGET"
+          --site-url="$SITE_ORIGIN"
+          --base-path="$SITE_BASE_PATH"
+          --out-dir=".qa/ci/${BUILD_TARGET}"
+      - name: Verify AWS edge routing fixtures
+        if: matrix.target == 'vercel'
+        run: node hosting/aws/verify.mjs
+      - name: Retain checked files for review
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: checked-${{ matrix.target }}
+          path: .qa/ci/${{ matrix.target }}/
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 7

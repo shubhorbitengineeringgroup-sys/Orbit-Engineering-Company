@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Check, Layers3, Search, X } from 'lucide-react';
 import { PRODUCT_CATEGORIES, PRODUCT_FAMILIES, PRODUCTS } from '../data/products';
+import { assetPath } from '../config/deployment';
 
 const categoryImage = category => category.products.find(product => product.id === 'electromagnetic-flow-meter') || category.products[0];
 
@@ -46,7 +47,12 @@ export default function ProductCategoryBrowser({ selectedId, familyId, onChoose,
       <button ref={closeRef} type="button" className="catalog-browser-close" aria-label="Close category browser" onClick={onClose}><X size={21} /></button>
     </header>
     <div className="catalog-browser-filters">
-      <label className="catalog-browser-search" htmlFor="category-browser-search"><Search size={19} /><input ref={searchRef} id="category-browser-search" type="search" aria-label="Search product categories or products" placeholder="Find a category or product…" value={search} onChange={event => setSearch(event.target.value)} />{search && <button type="button" aria-label="Clear category search" onClick={() => { setSearch(''); searchRef.current?.focus(); }}><X size={16} /></button>}</label>
+      <div className="catalog-browser-search">
+        <span className="catalog-search-icon" aria-hidden="true"><Search size={20} strokeWidth={1.8} /></span>
+        <label className="sr-only" htmlFor="category-browser-search">Search product categories or products</label>
+        <input ref={searchRef} id="category-browser-search" type="search" placeholder="Search categories or products" autoComplete="off" spellCheck={false} value={search} onChange={event => setSearch(event.target.value)} />
+        {search && <button type="button" aria-label="Clear category search" onClick={() => { setSearch(''); searchRef.current?.focus(); }}><X size={18} /></button>}
+      </div>
       <div className="catalog-browser-families" aria-label="Browse categories by application">
         <button type="button" aria-pressed={browseFamily === 'all'} onClick={() => browse('all')}>All categories<span>{PRODUCT_CATEGORIES.length}</span></button>
         {PRODUCT_FAMILIES.map(item => <button type="button" key={item.id} aria-pressed={browseFamily === item.id} onClick={() => browse(item.id)}>{item.name}<span>{PRODUCT_CATEGORIES.filter(category => category.family === item.id).length}</span></button>)}
@@ -54,19 +60,19 @@ export default function ProductCategoryBrowser({ selectedId, familyId, onChoose,
     </div>
     <div className="catalog-browser-body">
       <aside className="catalog-browser-preview" aria-hidden="true">
-        <div className="catalog-browser-landscape"><img src={previewFamily.image} alt="" /><span>ENGINEERED TO WORK TOGETHER.</span></div>
-        <div className="catalog-browser-object" key={preview.id}><img src={categoryImage(preview).image} alt="" /><span>{preview.number} / THE COLLECTION</span></div>
+        <div className="catalog-browser-landscape"><img src={assetPath(previewFamily.image)} alt="" /><span>ENGINEERED TO WORK TOGETHER.</span></div>
+        <div className="catalog-browser-object" key={preview.id}><img src={assetPath(categoryImage(preview).image)} alt="" /><span>{preview.number} / THE COLLECTION</span></div>
         <div className="catalog-browser-preview-copy"><small>{previewFamily.name}</small><strong>{preview.name}</strong><p>{preview.tagline}</p><span>{preview.products.length} {preview.products.length === 1 ? 'product' : 'products'} to explore<ArrowRight size={17} /></span></div>
       </aside>
       <div className="catalog-browser-choices">
         <div className="catalog-browser-result-note" role="status">{categories.length} {categories.length === 1 ? 'category' : 'categories'}{family ? ` · ${family.name}` : ' · One connected collection'}</div>
         {!search && <button type="button" data-category-id="all" className="catalog-browser-all" aria-pressed={selectedId === 'all' && familyId === browseFamily} onClick={() => choose('all')}>
-          <span className="catalog-browser-collage" aria-hidden="true">{[scopeProducts[0], scopeProducts[Math.min(2, scopeProducts.length - 1)], scopeProducts[scopeProducts.length - 1]].map((product, index) => <img key={`${product.id}-${index}`} src={product.image} alt="" />)}</span>
+          <span className="catalog-browser-collage" aria-hidden="true">{[scopeProducts[0], scopeProducts[Math.min(2, scopeProducts.length - 1)], scopeProducts[scopeProducts.length - 1]].map((product, index) => <img key={`${product.id}-${index}`} src={assetPath(product.image)} alt="" />)}</span>
           <span><small>{scopeProducts.length} PRODUCTS</small><strong>{family ? `All in ${family.name}` : 'Explore the full collection'}</strong></span><ArrowRight size={20} />
         </button>}
         {categories.length ? <div className="catalog-browser-grid">
           {categories.map(category => <button key={category.id} type="button" data-category-id={category.id} className="catalog-browser-category" aria-pressed={selectedId === category.id} onPointerEnter={event => { if (event.pointerType !== 'touch') setPreviewId(category.id); }} onFocus={() => setPreviewId(category.id)} onClick={() => choose(category.id)}>
-            <span className="catalog-browser-category-art"><span>{category.number}</span><img src={categoryImage(category).image} alt="" loading="lazy" /><span className="catalog-browser-category-count">{selectedId === category.id ? <Check size={14} /> : category.products.length}</span></span>
+            <span className="catalog-browser-category-art"><span>{category.number}</span><img src={assetPath(categoryImage(category).image)} alt="" loading="lazy" /><span className="catalog-browser-category-count">{selectedId === category.id ? <Check size={14} /> : category.products.length}</span></span>
             <span className="catalog-browser-category-copy"><strong>{category.name}</strong><span>{category.products.length} {category.products.length === 1 ? 'product' : 'products'}<ArrowRight size={15} /></span></span>
           </button>)}
         </div> : <div className="catalog-browser-empty"><Layers3 size={29} /><strong>No categories found.</strong><p>Try another name or browse the full collection.</p><button type="button" onClick={() => { setSearch(''); setBrowseFamily('all'); }}>Show all categories <ArrowRight size={16} /></button></div>}

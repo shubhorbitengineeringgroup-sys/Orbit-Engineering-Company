@@ -72,10 +72,10 @@
   100% { transform: translateX(-50%); }
 }
 
-/* Reveal classes — activated by global IntersectionObserver */
+/* Content is visible in static HTML; JS may opt offscreen elements into reveals. */
 .reveal-up {
-  opacity: 0;
-  transform: translateY(36px);
+  opacity: 1;
+  transform: none;
   transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
@@ -84,8 +84,8 @@
   transform: translateY(0);
 }
 .reveal-left {
-  opacity: 0;
-  transform: translateX(45px);
+  opacity: 1;
+  transform: none;
   transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
@@ -94,8 +94,8 @@
   transform: translateX(0);
 }
 .reveal-right {
-  opacity: 0;
-  transform: translateX(-45px);
+  opacity: 1;
+  transform: none;
   transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
@@ -104,8 +104,8 @@
   transform: translateX(0);
 }
 .reveal-scale {
-  opacity: 0;
-  transform: scale(0.92) translateY(24px);
+  opacity: 1;
+  transform: none;
   transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
@@ -114,7 +114,7 @@
   transform: scale(1) translateY(0);
 }
 .reveal-fade {
-  opacity: 0;
+  opacity: 1;
   transition: opacity 0.85s ease;
   will-change: opacity;
 }
@@ -124,14 +124,28 @@
 
 /* Snappy Spring & Bounce Animation */
 .reveal-bounce {
-  opacity: 0;
-  transform: scale(0.8) translateY(45px);
+  opacity: 1;
+  transform: none;
   transition: opacity 0.85s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.85s cubic-bezier(0.34, 1.56, 0.64, 1);
   will-change: opacity, transform;
 }
 .reveal-bounce.visible {
   opacity: 1;
   transform: scale(1) translateY(0);
+}
+
+[data-reveal-pending="true"]:not(.visible) { opacity: 0; }
+.reveal-up[data-reveal-pending="true"]:not(.visible) { transform: translateY(36px); }
+.reveal-left[data-reveal-pending="true"]:not(.visible) { transform: translateX(45px); }
+.reveal-right[data-reveal-pending="true"]:not(.visible) { transform: translateX(-45px); }
+.reveal-scale[data-reveal-pending="true"]:not(.visible) { transform: scale(.92) translateY(24px); }
+.reveal-bounce[data-reveal-pending="true"]:not(.visible) { transform: scale(.8) translateY(45px); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  [data-reveal-pending="true"]:not(.visible), .services-reveal[data-pending="true"] { opacity: 1; transform: none; }
+  .home-entry-telemetry-packet { display: none; }
 }
 
 .card-bounce {
@@ -408,3 +422,8 @@
 .animate-scroll-hint {
   animation: scrollHint 8s ease-in-out infinite;
 }
+
+.skip-link { position: fixed; top: 12px; left: 12px; z-index: 3000; padding: 12px 18px; border-radius: 10px; background: #fff; color: #0a2748; font-weight: 700; box-shadow: 0 4px 20px #0a274830; transform: translateY(-180%); }
+.skip-link:focus-visible { transform: translateY(0); outline: 3px solid #0073bc; outline-offset: 3px; }
+main [id] { scroll-margin-top: 100px; }
+:where(a, button, summary, input, select, textarea):focus-visible { outline: 2px solid #0073bc; outline-offset: 4px; }

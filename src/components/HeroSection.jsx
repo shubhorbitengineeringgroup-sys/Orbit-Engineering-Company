@@ -1,21 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import ResponsiveImage from './ResponsiveImage';
+import React from 'react';
 import { ArrowRight, Play, Settings, Recycle, Leaf } from 'lucide-react';
+import PageLink from './PageLink';
 
 export default function HeroSection({ onNavigate, onOpenQuote }) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   return (
     <section className="home-entry-hero relative w-full h-screen min-h-[500px] max-h-[1200px] overflow-hidden bg-[#0c1c2e] select-none font-sans">
 
       {/* ════ 1. BASE CLEAN WATER TREATMENT BACKGROUND IMAGE ════ */}
       <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
-        <img
+        <ResponsiveImage
           src="/images/water_treatment_plant.jpg"
-          alt="Orbit Water Treatment Plant Facility"
+          alt="Water treatment plant with clarifier tanks and connected infrastructure"
+          width="1024" height="576" loading="eager" fetchPriority="high" decoding="async"
           className="w-full h-full object-cover object-center"
         />
       </div>
@@ -107,7 +104,7 @@ export default function HeroSection({ onNavigate, onOpenQuote }) {
         />
 
         {/* Subtle animated telemetry pulse packet */}
-        <circle r="1.8" fill="#ffffff" filter="url(#cyanGlow)">
+        <circle className="home-entry-telemetry-packet" r="1.8" fill="#ffffff" filter="url(#cyanGlow)">
           <animateMotion
             path="M 100 372 L 320 418 L 535 446 L 685 446"
             dur="4.2s"
@@ -126,9 +123,10 @@ export default function HeroSection({ onNavigate, onOpenQuote }) {
           height: '15.94%',
         }}
       >
-        <img
+        <ResponsiveImage
           src="/images/building_facade.png"
           alt="Orbit Engineering Building Facade"
+          width="280" height="150" sizes="(min-width: 640px) 17vw, 280px" loading="lazy" decoding="async"
           className="w-full h-full object-fill pointer-events-none"
         />
       </div>
@@ -314,8 +312,7 @@ export default function HeroSection({ onNavigate, onOpenQuote }) {
           — NOT derived from JS/scroll state — so the eyebrow is never overlapped on first paint */}
       <div className="absolute inset-0 z-10 pointer-events-none">
         <div
-          className={`home-entry-hero__copy w-full h-full px-6 sm:px-10 lg:px-[5.4%] pt-[68px] sm:pt-[74px] lg:pt-[80px] xl:pt-[86px] pointer-events-auto transition-opacity duration-700 ${mounted ? 'opacity-100' : 'opacity-0'
-            }`}
+          className="home-entry-hero__copy w-full h-full px-6 sm:px-10 lg:px-[5.4%] pt-[68px] sm:pt-[74px] lg:pt-[80px] xl:pt-[86px] pointer-events-auto"
         >
           <div className="max-w-[680px] text-left">
 
@@ -333,7 +330,7 @@ export default function HeroSection({ onNavigate, onOpenQuote }) {
 
             {/* Supporting Paragraph with exact 3-line wrap */}
             <p className="text-[13.5px] sm:text-[14.5px] lg:text-[15px] xl:text-[16.5px] text-[#2c3e50] leading-[1.65] mt-3.5 sm:mt-4 xl:mt-4.5 mb-5 sm:mb-6 xl:mb-7 max-w-[580px] font-normal">
-              At Orbit Engineering Company, we design, build and deliver{' '}
+              At Orbit Engineering, we design, build and deliver{' '}
               <br className="hidden sm:inline" />
               advanced water &amp; wastewater treatment solutions for a{' '}
               <br className="hidden sm:inline" />
@@ -343,17 +340,17 @@ export default function HeroSection({ onNavigate, onOpenQuote }) {
             {/* CTA Buttons Row */}
             <div className="home-entry-hero__actions flex flex-row items-center gap-4 sm:gap-5 xl:gap-6">
               {/* Primary CTA */}
-              <button
-                onClick={() => onNavigate?.('services')}
+              <PageLink
+                page="solutions" onNavigate={onNavigate}
                 className="inline-flex items-center justify-center gap-2.5 px-6 py-3 sm:px-7 sm:py-3.5 xl:px-8 xl:py-4 rounded-full bg-[#0070bb] hover:bg-[#005ea0] text-white text-[13.5px] sm:text-[14.5px] xl:text-[16px] font-semibold shadow-lg shadow-[#0070bb]/30 transition-all duration-200 hover:scale-[1.02] cursor-pointer whitespace-nowrap"
               >
                 <span>Explore Our Solutions</span>
                 <ArrowRight className="w-4 h-4 xl:w-4.5 xl:h-4.5 stroke-[2.4]" />
-              </button>
+              </PageLink>
 
               {/* Secondary CTA: Frosted glass pill — matches floating card glass style */}
-              <button
-                onClick={() => onNavigate?.('about')}
+              <PageLink
+                page="about" onNavigate={onNavigate}
                 className="inline-flex items-center gap-3 pl-2 pr-5 py-2 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-[10px] border border-white/40 shadow-[0_4px_16px_rgba(0,30,60,0.12)] transition-all duration-200 hover:scale-[1.02] cursor-pointer group"
               >
                 {/* Circular play icon */}
@@ -361,7 +358,7 @@ export default function HeroSection({ onNavigate, onOpenQuote }) {
                   <Play className="w-4 h-4 xl:w-4.5 xl:h-4.5 fill-[#0070bb] text-[#0070bb] translate-x-0.5" />
                 </div>
                 <span className="text-[13.5px] sm:text-[14.5px] xl:text-[16px] font-semibold text-[#0a1f38] whitespace-nowrap">Watch Our Story</span>
-              </button>
+              </PageLink>
             </div>
 
           </div>

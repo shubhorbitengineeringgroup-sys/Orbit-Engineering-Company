@@ -17,8 +17,8 @@
 .home-trust-strip__inner > div { display: flex; flex: 1; justify-content: space-around; gap: 22px; }
 .home-trust-strip img { width: 65px; height: 55px; object-fit: contain; transition: transform .3s; }
 .home-trust-strip img:hover { transform: translateY(-3px); }
-.home-trust-strip button { width: 43px; height: 43px; border-radius: 50%; border: 1px solid #d9e6ef; display: flex; align-items: center; justify-content: center; color: #0073bc; background: white; flex-shrink: 0; transition: background .3s; }
-.home-trust-strip button:hover { background: #e5f4ff; }
+.home-trust-strip a { width: 43px; height: 43px; border-radius: 50%; border: 1px solid #d9e6ef; display: flex; align-items: center; justify-content: center; color: #0073bc; background: white; flex-shrink: 0; transition: background .3s; }
+.home-trust-strip a:hover { background: #e5f4ff; }
 .home-section-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 35px; margin-bottom: 40px; }
 .home-capabilities { display: grid; grid-template-columns: repeat(3, 1fr); gap: 23px; }
 .home-capability-controls { display: none; }

@@ -1,8 +1,201 @@
 {
-  "rewrites": [
+  "git": { "deploymentEnabled": false },
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.orbitengineering.com"
+        }
+      ],
+      "destination": "https://orbitengineering.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/page/profile",
+      "destination": "/about",
+      "permanent": true
+    },
+    {
+      "source": "/page/Representations",
+      "destination": "/ecosystem",
+      "permanent": true
+    },
+    {
+      "source": "/page/qualityandqccreditation",
+      "destination": "/about",
+      "permanent": true
+    },
+    {
+      "source": "/page/enquiry",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/page/contact",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/web/page/solution/turnkey-automation",
+      "destination": "/solutions/scada-plc-automation-bhopal",
+      "permanent": true
+    },
+    {
+      "source": "/web/page/products/pressure/pressure-transmitter",
+      "destination": "/products/pressure-transmitters",
+      "permanent": true
+    },
+    {
+      "source": "/web/page/products/level/level-switches",
+      "destination": "/products/level-switches",
+      "permanent": true
+    },
+    {
+      "source": "/web/page/products/level/level-transmitters",
+      "destination": "/products/level-transmitters",
+      "permanent": true
+    },
+    {
+      "source": "/web/page/products/liquid-analysis/online-analysis",
+      "destination": "/products/water-quality",
+      "permanent": true
+    },
+    {
+      "source": "/web/page/products/automation/rtu",
+      "destination": "/products/automation",
+      "permanent": true
+    },
+    {
+      "source": "/web/page/products/automation/iot",
+      "destination": "/products/automation",
+      "permanent": true
+    },
+    {
+      "source": "/web/page/products/automation/scada",
+      "destination": "/products/automation",
+      "permanent": true
+    },
+    {
+      "source": "/web/page/products/automation/plc",
+      "destination": "/products/automation",
+      "permanent": true
+    },
+    {
+      "source": "/web/page/products/automation/dcs",
+      "destination": "/products/automation",
+      "permanent": true
+    },
+    {
+      "source": "/web/page/products/flow/flow-meter",
+      "destination": "/products/flow-meters",
+      "permanent": true
+    },
+    {
+      "source": "/web/page/products/flow/mechanical-meter",
+      "destination": "/products/flow-meters",
+      "permanent": true
+    },
+    {
+      "source": "/web/page/solution/field-instrument-installation-and-commissioning-service",
+      "destination": "/solutions/installation-commissioning-madhya-pradesh",
+      "permanent": true
+    },
+    {
+      "source": "/services",
+      "destination": "/solutions",
+      "permanent": true
+    },
+    {
+      "source": "/service",
+      "destination": "/solutions",
+      "permanent": true
+    },
+    {
+      "source": "/projects",
+      "destination": "/solutions",
+      "permanent": true
+    },
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
+  "headers": [
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; img-src 'self' data: https://images.unsplash.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; frame-src https://maps.google.com https://www.google.com; media-src 'self'; manifest-src 'self'; worker-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Cross-Origin-Resource-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "X-Permitted-Cross-Domain-Policies",
+          "value": "none"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/404",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
     }
-  ]
+  ],
+  "framework": "vite",
+  "installCommand": "npm ci",
+  "buildCommand": "npm run build:vercel",
+  "outputDirectory": "dist"
 }

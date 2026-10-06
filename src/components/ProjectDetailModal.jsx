@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { assetPath } from '../config/deployment';
 import { 
   X, 
   MapPin, 
@@ -43,7 +44,7 @@ export default function ProjectDetailModal({ project, onClose, onOpenQuote }) {
             className="relative h-60 sm:h-72 overflow-hidden bg-slate-900 group cursor-pointer"
           >
             <img
-              src={project.image}
+              src={assetPath(project.image)}
               alt={project.name}
               onError={(e) => {
                 e.currentTarget.src = 'https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?auto=format&fit=crop&w=1000&q=80';
@@ -167,7 +168,7 @@ export default function ProjectDetailModal({ project, onClose, onOpenQuote }) {
             className="relative max-w-5xl max-h-[85vh] overflow-hidden rounded-2xl shadow-2xl border border-white/20 bg-slate-900"
           >
             <img
-              src={project.image}
+              src={assetPath(project.image)}
               alt={project.name}
               className="w-full h-full object-contain max-h-[80vh]"
             />

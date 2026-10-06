@@ -13,18 +13,25 @@ export function useScrollReveal(opts = {}) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setIsVisible(true);
+      el.classList.add('visible');
+      return;
+    }
+    if (el.getBoundingClientRect().top >= window.innerHeight) el.dataset.revealPending = 'true';
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
           el.classList.add('visible');
+          delete el.dataset.revealPending;
           observer.unobserve(el);
         }
       },
       { threshold: opts.threshold ?? 0.12, rootMargin: opts.rootMargin ?? '0px 0px -60px 0px', ...opts }
     );
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => { observer.disconnect(); delete el.dataset.revealPending; };
   }, []);
 
   return { ref, isVisible };
@@ -38,12 +45,15 @@ export function useScrollReveal(opts = {}) {
  */
 export function useCountUp(end, duration = 1800) {
   const ref = useRef(null);
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(end);
   const started = useRef(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    setCount(end);
+    if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches || navigator.connection?.saveData || el.getBoundingClientRect().top < window.innerHeight) return;
+    let frame;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !started.current) {
@@ -54,16 +64,16 @@ export function useCountUp(end, duration = 1800) {
             const progress = Math.min(elapsed / duration, 1);
             const eased = 1 - Math.pow(1 - progress, 4);
             setCount(Math.round(eased * end));
-            if (progress < 1) requestAnimationFrame(animate);
+            if (progress < 1) frame = requestAnimationFrame(animate);
           };
-          requestAnimationFrame(animate);
+          frame = requestAnimationFrame(animate);
           observer.unobserve(el);
         }
       },
       { threshold: 0.3 }
     );
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => { observer.disconnect(); if (frame) cancelAnimationFrame(frame); };
   }, [end, duration]);
 
   return { ref, count };
@@ -81,6 +91,7 @@ export function useStaggerReveal(count = 6, stagger = 80) {
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
+    if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setRevealed(true); return; }
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {

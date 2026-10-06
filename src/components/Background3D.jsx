@@ -7,6 +7,7 @@ export default function Background3D() {
   useEffect(() => {
     const container = mountRef.current;
     if (!container) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || navigator.connection?.saveData || ['slow-2g', '2g'].includes(navigator.connection?.effectiveType)) return;
 
     // Scene
     const scene = new THREE.Scene();
@@ -23,7 +24,9 @@ export default function Background3D() {
     camera.lookAt(0, 0, 0);
 
     // Renderer
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    let renderer;
+    try { renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true }); }
+    catch { return; }
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
@@ -142,6 +145,7 @@ export default function Background3D() {
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
+      if (document.hidden) return;
       const time = clock.getElapsedTime() * 0.8;
 
       // Gentle camera mouse follow
@@ -185,6 +189,11 @@ export default function Background3D() {
       geometry.dispose();
       material.dispose();
       texture.dispose();
+      icosaGeometry.dispose();
+      wireframeMaterial.dispose();
+      icosa2.geometry.dispose();
+      icosa2.material.dispose();
+      renderer.dispose();
     };
   }, []);
 

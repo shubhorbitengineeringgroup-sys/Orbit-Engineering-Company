@@ -2,7 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowUpRight, CheckCircle2, ChevronRight, Cpu, Droplets, Gauge, MessageSquare, Maximize2, ShieldCheck, Sun, Wrench, X } from 'lucide-react';
 import { siteConfig } from '../config/siteConfig';
 import { SectionHeading, ImageCTA, MotionPhoto, ImageViewer } from '../components/VisualSystem';
+import ResponsiveImage from '../components/ResponsiveImage';
 import ProductCatalog from '../components/ProductCatalog';
+import PageLink from '../components/PageLink';
+import { handlePageLink } from '../config/navigation';
 import { PRODUCTS as MASTER_PRODUCTS } from '../data/products';
 import '../styles/services.css';
 const EDITORIAL_SERVICES = [
@@ -199,9 +202,9 @@ function FacilityComparison() {
           if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
         }}
       >
-        <img src="/images/reservoir-D5_YW2_r.jpg" alt="Concrete clear water storage reservoir" loading="lazy" />
+        <ResponsiveImage src="/images/reservoir-D5_YW2_r.jpg" alt="Concrete clear water storage reservoir" loading="lazy" sizes="(max-width: 850px) 100vw, (max-width: 1466px) 60vw, 800px" />
         <div className="services-comparison-before" style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}>
-          <img src="/images/hero-wtp-BGjLUC-Q.jpg" alt="Circular water treatment clarifiers" loading="lazy" />
+          <ResponsiveImage src="/images/hero-wtp-BGjLUC-Q.jpg" alt="Circular water treatment clarifiers" loading="lazy" sizes="(max-width: 850px) 100vw, (max-width: 1466px) 60vw, 800px" />
         </div>
         <span className="services-comparison-label services-comparison-label--left">Treatment</span>
         <span className="services-comparison-label services-comparison-label--right">Storage</span>
@@ -249,7 +252,7 @@ function DetailDialog({ item, onClose, onOpenQuote }) {
       }}
     >
       <div className="services-detail-cover">
-        <img src={isProduct ? PRODUCT_IMAGES[item.category] : item.image} alt={isProduct ? `${item.category} application` : item.title} />
+        <ResponsiveImage src={isProduct ? PRODUCT_IMAGES[item.category] : item.image} alt={isProduct ? `${item.category} application` : item.title} loading="eager" />
         <button ref={closeRef} onClick={onClose} className="services-dialog-close" aria-label="Close technical details"><X size={21} /></button>
         <div>
           <span className="visual-eyebrow">{isProduct ? item.category : 'Engineering scope'}</span>
@@ -320,7 +323,7 @@ function ProductsStudioHero({ familyId, onSelectFamily, onExplore, onOpenQuote }
           <span className="visual-eyebrow">Precision, beautifully engineered</span>
           <h1>Every detail.<br /><span>Better flow.</span></h1>
           <p>Smart instruments. Reliable controls. Discover the components that make a stronger water system.</p>
-          <div className="services-bespoke-actions"><button className="visual-button" onClick={() => onExplore()}>Explore the collection <ArrowRight size={18} /></button><button className="services-studio-enquire" onClick={onOpenQuote}>Find your fit <ArrowUpRight size={18} /></button></div>
+          <div className="services-bespoke-actions"><a href="#capabilities-catalog" className="visual-button" onClick={event => handlePageLink(event, 'products', () => onExplore())}>Explore the collection <ArrowRight size={18} /></a><PageLink page="contact" onAction={onOpenQuote} className="services-studio-enquire">Find your fit <ArrowUpRight size={18} /></PageLink></div>
           <div className="products-studio-micro"><span /><span>Selected for your application.<br /><strong>Integrated by our engineers.</strong></span></div>
         </div>
       </div>
@@ -341,7 +344,7 @@ function SolutionsLandscapeHero({ serviceId, onSelectStage, onExplore, onOpenQuo
     <section className="solutions-landscape-hero">
       <div className="solutions-landscape-scene" key={`scene-${stage.id}`}><MotionPhoto src={stage.service.image} alt={stage.service.title} loading="eager" /></div>
       <div className="visual-container solutions-landscape-copy-wrap">
-        <div className="solutions-landscape-copy"><span className="visual-eyebrow">The complete water journey</span><h1>A better journey.<br />For <span>every drop.</span></h1><p>From the first intake to the last mile. Thoughtful infrastructure, connected by expert engineering.</p><div className="services-bespoke-actions"><button className="visual-button" onClick={onExplore}>Explore our solutions <ArrowRight size={18} /></button><button className="solutions-hero-enquire" onClick={onOpenQuote}>Plan your project <ArrowUpRight size={18} /></button></div></div>
+        <div className="solutions-landscape-copy"><span className="visual-eyebrow">The complete water journey</span><h1>A better journey.<br />For <span>every drop.</span></h1><p>From the first intake to the last mile. Thoughtful infrastructure, connected by expert engineering.</p><div className="services-bespoke-actions"><a href="#capabilities-catalog" className="visual-button">Explore our solutions <ArrowRight size={18} /></a><PageLink page="contact" onAction={onOpenQuote} className="solutions-hero-enquire">Plan your project <ArrowUpRight size={18} /></PageLink></div></div>
       </div>
       <div className="solutions-process-map" aria-label="Interactive water journey">
         <svg viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true"><path className="solutions-process-route-shadow" d="M130 260 C200 270 230 148 310 148 S410 236 500 236 S615 112 700 112 S810 188 910 188" /><path className="solutions-process-route" d="M130 260 C200 270 230 148 310 148 S410 236 500 236 S615 112 700 112 S810 188 910 188" /></svg>
@@ -389,7 +392,7 @@ export default function ServicesPage({ onOpenQuote, onTabChange, initialTab = 's
         }
       });
     }, { threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
-    targets.forEach(target => { target.dataset.pending = 'true'; observer.observe(target); });
+    targets.forEach(target => { if (target.getBoundingClientRect().top >= window.innerHeight) target.dataset.pending = 'true'; observer.observe(target); });
     return () => observer.disconnect();
   }, [activeTab, productCategory]);
 
@@ -407,10 +410,10 @@ export default function ServicesPage({ onOpenQuote, onTabChange, initialTab = 's
     <div ref={pageRef} className="visual-page services-page">
       {isProducts ? <ProductsStudioHero familyId={heroFamily} onSelectFamily={setHeroFamily} onExplore={category => { setProductCategory({ name: category || 'All products' }); scrollToCatalog(); }} onOpenQuote={onOpenQuote} /> : <SolutionsLandscapeHero serviceId={selectedServiceId} onSelectStage={setSelectedServiceId} onExplore={scrollToCatalog} onOpenQuote={onOpenQuote} />}
 
-      <div ref={catalogRef} className="visual-container services-catalog-start">
+      <div id="capabilities-catalog" ref={catalogRef} className="visual-container services-catalog-start">
         <div className="services-page-tabs" role="tablist" aria-label="Explore Orbit's capabilities" onKeyDown={handleTabKeys}>
-          <button ref={element => { tabRefs.current.solutions = element; }} id="services-tab-solutions" role="tab" aria-controls="services-panel-solutions" aria-selected={!isProducts} tabIndex={!isProducts ? 0 : -1} onClick={() => changeTab('solutions')}><Droplets size={19} /> Engineering solutions <ArrowUpRight size={17} /></button>
-          <button ref={element => { tabRefs.current.products = element; }} id="services-tab-products" role="tab" aria-controls="services-panel-products" aria-selected={isProducts} tabIndex={isProducts ? 0 : -1} onClick={() => changeTab('products')}><Gauge size={19} /> Products & technology <ArrowUpRight size={17} /></button>
+          <PageLink page="solutions" onNavigate={changeTab} ref={element => { tabRefs.current.solutions = element; }} id="services-tab-solutions" role="tab" aria-controls="services-panel-solutions" aria-selected={!isProducts} tabIndex={!isProducts ? 0 : -1}><Droplets size={19} /> Engineering solutions <ArrowUpRight size={17} /></PageLink>
+          <PageLink page="products" onNavigate={changeTab} ref={element => { tabRefs.current.products = element; }} id="services-tab-products" role="tab" aria-controls="services-panel-products" aria-selected={isProducts} tabIndex={isProducts ? 0 : -1}><Gauge size={19} /> Products & technology <ArrowUpRight size={17} /></PageLink>
         </div>
       </div>
 
@@ -447,7 +450,7 @@ export default function ServicesPage({ onOpenQuote, onTabChange, initialTab = 's
               <div className="services-system-grid">
                 {ADVANCED_SYSTEMS.map((service, index) => {
                   const Icon = SYSTEM_ICONS[index];
-                  return <button key={service.id} className="services-system-card services-reveal" onClick={() => setSelectedDetail(service)}><img src={service.image} alt={service.title} loading="lazy" /><span className="services-system-icon"><Icon size={22} /></span><span className="services-system-copy"><span className="services-card-eyebrow">{index === 0 ? 'Connected intelligence' : index === 1 ? 'Sustainable energy' : 'Lifetime support'}</span><span className="services-system-title">{service.title}</span><span className="services-system-description">{index === 0 ? 'See your entire network. Control every critical point.' : index === 1 ? 'Harness clean energy for reliable water delivery.' : 'Keep essential infrastructure ready, every day.'}</span><span className="services-card-action">Explore solution <ArrowUpRight size={19} /></span></span></button>;
+                  return <button key={service.id} className="services-system-card services-reveal" onClick={() => setSelectedDetail(service)}><ResponsiveImage src={service.image} alt={service.title} loading="lazy" sizes="800px" /><span className="services-system-icon"><Icon size={22} /></span><span className="services-system-copy"><span className="services-card-eyebrow">{index === 0 ? 'Connected intelligence' : index === 1 ? 'Sustainable energy' : 'Lifetime support'}</span><span className="services-system-title">{service.title}</span><span className="services-system-description">{index === 0 ? 'See your entire network. Control every critical point.' : index === 1 ? 'Harness clean energy for reliable water delivery.' : 'Keep essential infrastructure ready, every day.'}</span><span className="services-card-action">Explore solution <ArrowUpRight size={19} /></span></span></button>;
                 })}
               </div>
             </div>

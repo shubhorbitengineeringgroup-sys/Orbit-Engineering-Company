@@ -1,3 +1,4 @@
+import ResponsiveImage from '../components/ResponsiveImage';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   ArrowRight, Droplets, Cpu, ShieldCheck, TrendingUp, Award, Layers,
@@ -10,6 +11,7 @@ import HeroSection from '../components/HeroSection';
 import { useScrollReveal, useCountUp } from '../hooks/useAnimations';
 import { SectionHeading, ImageCTA, MotionPhoto } from '../components/VisualSystem';
 import WaterJourney from '../components/WaterJourney';
+import PageLink from '../components/PageLink';
 import '../styles/home.css';
 
 // Animated stat counter component
@@ -158,7 +160,7 @@ function PlantSimulation() {
 
         {/* Left: Stage Visual & Diagnostics */}
         <div className="lg:col-span-5 relative rounded-2xl overflow-hidden aspect-[16/10] bg-slate-100 border border-slate-200 shadow-sm">
-          <img
+          <ResponsiveImage
             src={current.image}
             alt={current.title}
             className="w-full h-full object-cover opacity-95"
@@ -375,7 +377,7 @@ export default function HomePage({ onNavigate, onOpenQuote }) {
           <div><strong>3 ISO</strong><span>Certified systems</span></div>
           <div><strong>1998</strong><span>Our story began</span></div>
         </div>
-        <button type="button" className="visual-button visual-button--secondary" onClick={() => onNavigate('about')}>Discover the Orbit story<ArrowRight size={17} /></button>
+        <PageLink page="about" onNavigate={onNavigate} className="visual-button visual-button--secondary">Discover the Orbit story<ArrowRight size={17} /></PageLink>
       </div>
       <div className="home-story-photos reveal-scale">
         <div className="home-story-photos__main visual-image"><MotionPhoto src="/images/wtp_hero.jpg" alt="Aerial view of water treatment infrastructure" /></div>
@@ -386,15 +388,15 @@ export default function HomePage({ onNavigate, onOpenQuote }) {
     </section>
 
     <section className="home-trust-strip">
-      <div className="visual-container home-trust-strip__inner"><span>PARTNERS IN<br /><strong>BETTER INFRASTRUCTURE</strong></span><div>{siteConfig.ecosystem.government.slice(0, 6).map(partner => <img key={partner.name} src={partner.logo} alt={partner.name} title={partner.name} loading="lazy" />)}</div><button type="button" onClick={() => onNavigate('ecosystem')} aria-label="Explore our government and industry ecosystem"><ArrowRight size={20} /></button></div>
+      <div className="visual-container home-trust-strip__inner"><span>PARTNERS IN<br /><strong>BETTER INFRASTRUCTURE</strong></span><div>{siteConfig.ecosystem.government.slice(0, 6).map(partner => <ResponsiveImage key={partner.name} src={partner.logo} alt={partner.name} title={partner.name} loading="lazy" decoding="async" />)}</div><PageLink page="ecosystem" onNavigate={onNavigate} aria-label="Explore our government and industry ecosystem"><ArrowRight size={20} /></PageLink></div>
     </section>
 
     <section className="visual-container visual-section">
-      <div className="home-section-top reveal-up"><SectionHeading eyebrow="CONNECTED EXPERTISE. COMPLETE SOLUTIONS." title={<>One partner.<br /><span className="visual-title-accent">Every part of the journey.</span></>} /><button type="button" className="visual-button visual-button--secondary" onClick={() => onNavigate('solutions')}>Explore all solutions<ArrowRight size={17} /></button></div>
-      <div ref={capabilityTrack} className="home-capabilities" onScroll={event => { const step = event.currentTarget.firstElementChild?.offsetWidth + 18; if (step) setActiveCapability(Math.min(2, Math.max(0, Math.round(event.currentTarget.scrollLeft / step)))); }}>{capabilities.map(({ number, title, subtitle, image, description, icon: Icon }, i) => <button key={number} type="button" className="home-capability reveal-up" style={{ transitionDelay: i * 90 + 'ms' }} onClick={() => onNavigate('solutions')}>
-        <img src={image} alt={subtitle} loading="lazy" /><div className="home-capability__shade" /><span className="home-capability__number">{number} / ORBIT EXPERTISE</span><span className="home-capability__icon"><Icon size={23} /></span>
+      <div className="home-section-top reveal-up"><SectionHeading eyebrow="CONNECTED EXPERTISE. COMPLETE SOLUTIONS." title={<>One partner.<br /><span className="visual-title-accent">Every part of the journey.</span></>} /><PageLink page="solutions" onNavigate={onNavigate} className="visual-button visual-button--secondary">Explore all solutions<ArrowRight size={17} /></PageLink></div>
+      <div ref={capabilityTrack} className="home-capabilities" onScroll={event => { const step = event.currentTarget.firstElementChild?.offsetWidth + 18; if (step) setActiveCapability(Math.min(2, Math.max(0, Math.round(event.currentTarget.scrollLeft / step)))); }}>{capabilities.map(({ number, title, subtitle, image, description, icon: Icon }, i) => <PageLink key={number} page="solutions" onNavigate={onNavigate} className="home-capability reveal-up" style={{ transitionDelay: i * 90 + 'ms' }}>
+        <ResponsiveImage src={image} alt={subtitle} sizes="(min-width: 900px) 40vw, 100vw" loading="lazy" /><div className="home-capability__shade" /><span className="home-capability__number">{number} / ORBIT EXPERTISE</span><span className="home-capability__icon"><Icon size={23} /></span>
         <span className="home-capability__body"><small>{subtitle}</small><strong>{title}</strong><span>{description}</span><span className="home-capability__link">Discover the solution<ArrowRight size={18} /></span></span>
-      </button>)}</div>
+      </PageLink>)}</div>
       <div className="home-capability-controls"><span>0{activeCapability + 1} / 03 <small>SWIPE TO DISCOVER</small></span><div>{capabilities.map((item, index) => <button key={item.number} type="button" aria-label={`Show ${item.subtitle.toLowerCase()}`} aria-pressed={index === activeCapability} onClick={() => { const track = capabilityTrack.current; track?.scrollTo({ left: index * (track.firstElementChild.offsetWidth + 18), behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' }); setActiveCapability(index); }}><span /></button>)}</div></div>
     </section>
 
@@ -402,7 +404,7 @@ export default function HomePage({ onNavigate, onOpenQuote }) {
 
     <section className="home-intelligence">
       <div className="visual-container home-intelligence__grid">
-        <div className="home-intelligence__photo visual-image reveal-left"><img src="/images/scada-JO4jHDve.jpg" alt="SCADA screens in an industrial control room" loading="lazy" /><div className="home-intelligence__label visual-glass"><Activity size={21} /><div>Smarter systems. Clearer decisions.<small>SCADA · TELEMETRY · AUTOMATION</small></div></div></div>
+        <div className="home-intelligence__photo visual-image reveal-left"><ResponsiveImage src="/images/scada-JO4jHDve.jpg" alt="SCADA screens in an industrial control room" sizes="(min-width: 900px) 55vw, 100vw" loading="lazy" /><div className="home-intelligence__label visual-glass"><Activity size={21} /><div>Smarter systems. Clearer decisions.<small>SCADA · TELEMETRY · AUTOMATION</small></div></div></div>
         <div className="reveal-up"><SectionHeading eyebrow="SEE THE THINKING BEHIND THE TECHNOLOGY" title={<>Infrastructure with<br /><span>intelligence built in.</span></>} description="A good water system does more than move water. It connects every stage, helps operators see the bigger picture and keeps the entire network working together." /><button type="button" className="visual-button" onClick={openDemo} aria-expanded={demoOpen} aria-controls="home-interactive-demo">Explore the interactive demo<ArrowRight size={17} /></button><span className="home-intelligence__note">Explore plant controls and a capacity planning tool.</span></div>
       </div>
       {demoOpen && <div id="home-interactive-demo" className="visual-container home-demo-panel">
@@ -413,8 +415,8 @@ export default function HomePage({ onNavigate, onOpenQuote }) {
     </section>
 
     <section className="visual-container visual-section home-product-preview">
-      <div className="reveal-up"><SectionHeading eyebrow="THE RIGHT COMPONENTS. THE RIGHT PERFORMANCE." title={<>Small details.<br /><span className="visual-title-accent">Lasting reliability.</span></>} description="Metering, valves, instrumentation and control systems—carefully selected to work as one." /><button type="button" className="visual-button visual-button--secondary" onClick={() => onNavigate('products')}>Explore our products<ArrowRight size={17} /></button></div>
-      <div className="home-product-preview__photos reveal-scale"><div className="visual-image"><img src="/images/flow-meter-DSWy7kTd.jpg" alt="Water metering instrumentation" loading="lazy" /><span>PRECISION METERING</span></div><div className="visual-image"><img src="/images/valves-Cn1fyoyr.jpg" alt="Industrial water control valves" loading="lazy" /><span>RELIABLE CONTROL</span></div></div>
+      <div className="reveal-up"><SectionHeading eyebrow="THE RIGHT COMPONENTS. THE RIGHT PERFORMANCE." title={<>Small details.<br /><span className="visual-title-accent">Lasting reliability.</span></>} description="Metering, valves, instrumentation and control systems—carefully selected to work as one." /><PageLink page="products" onNavigate={onNavigate} className="visual-button visual-button--secondary">Explore our products<ArrowRight size={17} /></PageLink></div>
+      <div className="home-product-preview__photos reveal-scale"><div className="visual-image"><ResponsiveImage src="/images/flow-meter-DSWy7kTd.jpg" alt="Water metering instrumentation" sizes="(min-width: 900px) 30vw, 50vw" loading="lazy" /><span>PRECISION METERING</span></div><div className="visual-image"><ResponsiveImage src="/images/valves-Cn1fyoyr.jpg" alt="Industrial water control valves" sizes="(min-width: 900px) 30vw, 50vw" loading="lazy" /><span>RELIABLE CONTROL</span></div></div>
     </section>
 
     <ImageCTA eyebrow="FROM AN IDEA TO REAL-WORLD IMPACT" title="Let’s make better water infrastructure happen." description="Bring us your project, your challenges and your ambition. We’ll bring the engineering." image="/images/service_intake.jpg" onAction={onOpenQuote} actionLabel="Start your project" />

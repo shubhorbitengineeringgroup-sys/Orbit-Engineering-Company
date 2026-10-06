@@ -3,6 +3,7 @@ import {
   Building2, MapPin, ArrowUpRight, Search, Layers, Maximize2, Filter, Activity
 } from 'lucide-react';
 import { siteConfig } from '../config/siteConfig';
+import { assetPath } from '../config/deployment';
 import { useScrollReveal } from '../hooks/useAnimations';
 
 // Live project counter ticker
@@ -131,7 +132,7 @@ export default function ProjectsPage({ onSelectProject }) {
                 {/* Image with overlay */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-slate-900 img-zoom-wrap">
                   <img
-                    src={project.image}
+                    src={assetPath(project.image)}
                     alt={project.name}
                     loading="lazy"
                     onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?auto=format&fit=crop&w=1000&q=80'; }}

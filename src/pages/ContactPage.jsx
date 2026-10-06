@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { assetPath } from '../config/deployment';
 import { ArrowDown, ArrowLeft, ArrowRight, Building2, Check, CheckCircle2, Clock, Droplets, ExternalLink, Gauge, Mail, MapPin, MessageSquare, Navigation, Phone, Settings2, Sun, Wrench } from 'lucide-react';
 import { siteConfig } from '../config/siteConfig';
 import { MotionPhoto, SectionHeading } from '../components/VisualSystem';
@@ -48,7 +49,7 @@ export default function ContactPage() {
             <h1>Great projects<br />start with<br /><span>a conversation.</span></h1>
             <p>Bring your vision. We'll bring the engineering.</p>
             <div className="contact-invitation-actions">
-              <button type="button" onClick={() => document.getElementById('project-inquiry')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })} className="visual-button">Start your project <ArrowDown size={18} /></button>
+              <a href="#project-inquiry" className="visual-button">Start your project <ArrowDown size={18} /></a>
               <a href={`tel:${contact.phonePrimary}`} className="contact-hero-call"><Phone size={18} /><span>Speak to our team<small>{contact.phonePrimary}</small></span></a>
             </div>
             <div className="contact-invitation-note"><span className="contact-note-line" /><MapPin size={15} /><span>Bhopal, India <small>Water expertise. Open conversations.</small></span></div>
@@ -114,10 +115,10 @@ export default function ContactPage() {
                         <legend>Nice to meet you.</legend>
                         <p className="contact-field-hint">Share the best way for our team to reach you.</p>
                         <div className="contact-fields">
-                          <div><label htmlFor="inquiry-name">Full name <span>*</span></label><input id="inquiry-name" name="name" autoComplete="name" required placeholder="Your name" value={formData.name} onChange={updateField} /></div>
+                          <div><label htmlFor="inquiry-name">Full name <span>*</span></label><input id="inquiry-name" name="name" autoComplete="name" maxLength={120} required placeholder="Your name" value={formData.name} onChange={updateField} /></div>
                           <div><label htmlFor="inquiry-phone">Phone number <span>*</span></label><input id="inquiry-phone" name="phone" type="tel" autoComplete="tel" required minLength={7} maxLength={20} placeholder="+91" value={formData.phone} onChange={updateField} /></div>
-                          <div><label htmlFor="inquiry-organization">Organization</label><input id="inquiry-organization" name="organization" autoComplete="organization" placeholder="Company or authority" value={formData.organization} onChange={updateField} /></div>
-                          <div><label htmlFor="inquiry-email">Email address</label><input id="inquiry-email" name="email" type="email" autoComplete="email" placeholder="you@company.com" value={formData.email} onChange={updateField} /></div>
+                          <div><label htmlFor="inquiry-organization">Organization</label><input id="inquiry-organization" name="organization" autoComplete="organization" maxLength={160} placeholder="Company or authority" value={formData.organization} onChange={updateField} /></div>
+                          <div><label htmlFor="inquiry-email">Email address</label><input id="inquiry-email" name="email" type="email" autoComplete="email" maxLength={254} placeholder="you@company.com" value={formData.email} onChange={updateField} /></div>
                         </div>
                         <div className="contact-selected-service"><selectedService.icon size={21} /><div><small>YOUR SELECTED SERVICE</small><strong>{selectedService.label}</strong></div><button type="button" className="contact-text-button" onClick={() => setStep(1)}>Change</button></div>
                       </fieldset>
@@ -169,7 +170,7 @@ export default function ContactPage() {
           </div>
           <article className="contact-location-card reveal-up">
             <div className="contact-location-copy">
-              <div className="contact-location-brand"><img src="/logo.png" alt="" loading="lazy" /><span>ORBIT<small>ENGINEERING COMPANY</small></span></div>
+              <div className="contact-location-brand"><img src={assetPath('/logo.png')} alt="" width="951" height="662" loading="lazy" decoding="async" /><span>ORBIT<small>ENGINEERING COMPANY</small></span></div>
               <div className="contact-location-marker"><span><MapPin size={26} strokeWidth={1.6} /></span><div><small>OUR OFFICE</small><strong>Bhopal, Madhya Pradesh</strong></div></div>
               <h3>A conversation.<br /><span>A new possibility.</span></h3>
               <address>{office.address}</address>
@@ -182,7 +183,7 @@ export default function ContactPage() {
             </div>
             <div className="contact-location-map">
               <div className="contact-location-map-bar"><span><MapPin size={16} />Your destination, found.</span><a href={office.mapsUrl} target="_blank" rel="noopener noreferrer" aria-label="Open Orbit Engineering's office location in Google Maps (opens in a new tab)">Google Maps<ExternalLink size={15} /></a></div>
-              <iframe title="Orbit Engineering office at Ground Bagsewaniya, B 32/A Priyadarshini Colony, Bhopal" src={office.mapsEmbedUrl} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen />
+              <iframe title={`${siteConfig.company.name} office at ${office.address}`} src={office.mapsEmbedUrl} loading="lazy" referrerPolicy="no-referrer" allowFullScreen />
               <div className="contact-location-map-footer"><span>BHOPAL · INDIA</span><span>462043</span></div>
             </div>
           </article>

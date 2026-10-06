@@ -1,6 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { ArrowDownRight, ArrowRight, Droplets, Gauge, Maximize2, Waves, Waypoints } from 'lucide-react';
 import { ImageViewer, MotionPhoto, SectionHeading } from './VisualSystem';
+import PageLink from './PageLink';
+import ResponsiveImage from './ResponsiveImage';
 import '../styles/water-journey.css';
 
 const SCENES = [
@@ -43,10 +45,10 @@ export default function WaterJourney({ onNavigate }) {
         </div>
         <div className="journey-side">
           <button type="button" className="journey-next" onClick={() => setScene(next)} aria-label={`Explore ${SCENES[next].label.toLowerCase()}`}>
-            <img src={SCENES[next].src} alt="" loading="lazy" />
+            <ResponsiveImage src={SCENES[next].src} alt="" sizes="(min-width: 900px) 32vw, 100vw" loading="lazy" />
             <span>UP NEXT<strong>{SCENES[next].label}<ArrowRight size={20} /></strong></span>
           </button>
-          <div className="journey-connecting"><svg viewBox="0 0 270 110" aria-hidden="true"><path d="M10 22H76Q110 22 110 55T144 88H260" /><circle cx="10" cy="22" r="5" /><circle cx="260" cy="88" r="5" /></svg><span>ONE CONTINUOUS PURPOSE</span><strong>Better water.<br />Better everyday life.</strong><button type="button" onClick={() => onNavigate('solutions')}>Explore the whole journey<ArrowRight size={17} /></button></div>
+          <div className="journey-connecting"><svg viewBox="0 0 270 110" aria-hidden="true"><path d="M10 22H76Q110 22 110 55T144 88H260" /><circle cx="10" cy="22" r="5" /><circle cx="260" cy="88" r="5" /></svg><span>ONE CONTINUOUS PURPOSE</span><strong>Better water.<br />Better everyday life.</strong><PageLink page="solutions" onNavigate={onNavigate}>Explore the whole journey<ArrowRight size={17} /></PageLink></div>
         </div>
       </div>
     </div>

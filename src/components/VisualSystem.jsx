@@ -1,12 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import { ArrowRight, ChevronLeft, ChevronRight, Droplets, X } from 'lucide-react';
 import '../styles/visual-system.css';
+import PageLink from './PageLink';
+import ResponsiveImage from './ResponsiveImage';
 
 export function PageHero({ eyebrow, title, description, image, imageAlt, metrics = [], children }) {
   return (
     <section className="visual-hero">
       <div className="visual-hero__scene" aria-hidden="true">
-        <img src={image} alt="" fetchpriority="high" />
+        <ResponsiveImage src={image} alt="" loading="eager" fetchPriority="high" />
       </div>
       <div className="visual-container visual-hero__layout">
         <div className="visual-hero__copy">
@@ -41,24 +43,24 @@ export function SectionHeading({ eyebrow, title, description, align = 'left' }) 
 
 export function ImageCTA({ eyebrow = 'LET’S BUILD SOMETHING THAT MATTERS', title, description, image = '/images/hero-wtp-BGjLUC-Q.jpg', onAction, actionLabel = 'Discuss your project' }) {
   return <section className="visual-container visual-cta reveal-up">
-    <img src={image} alt="Water treatment infrastructure" loading="lazy" />
+    <ResponsiveImage src={image} alt="Water treatment infrastructure" loading="lazy" />
     <div className="visual-cta__shade" />
     <div className="visual-cta__content">
       <span className="visual-eyebrow">{eyebrow}</span>
       <h2>{title}</h2>
       {description && <p>{description}</p>}
-      {onAction && <button type="button" onClick={onAction} className="visual-button">{actionLabel}<ArrowRight size={18} /></button>}
+      <PageLink page="contact" onAction={onAction} className="visual-button">{actionLabel}<ArrowRight size={18} /></PageLink>
     </div>
     <div className="visual-cta__mark" aria-hidden="true"><Droplets /></div>
   </section>;
 }
 
-export function MotionPhoto({ src, alt, className = '', children, loading = 'lazy' }) {
+export function MotionPhoto({ src, alt, className = '', children, loading = 'lazy', fetchPriority = loading === 'eager' ? 'high' : 'auto', sizes }) {
   const container = useRef(null);
   const frame = useRef(null);
   useEffect(() => () => { if (frame.current) cancelAnimationFrame(frame.current); }, []);
   const move = event => {
-    if (event.pointerType !== 'mouse' || !window.matchMedia('(hover: hover) and (pointer: fine)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (event.pointerType !== 'mouse' || navigator.connection?.saveData || !window.matchMedia('(hover: hover) and (pointer: fine)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const rect = event.currentTarget.getBoundingClientRect();
     const x = (event.clientX - rect.left) / rect.width - .5;
     const y = (event.clientY - rect.top) / rect.height - .5;
@@ -75,7 +77,7 @@ export function MotionPhoto({ src, alt, className = '', children, loading = 'laz
     container.current?.style.setProperty('--photo-y', '0px');
   };
   return <div ref={container} className={`motion-photo ${className}`} onPointerMove={move} onPointerLeave={reset}>
-    <img src={src} alt={alt} loading={loading} decoding="async" className="motion-photo__image" />
+    <ResponsiveImage src={src} alt={alt} loading={loading} fetchPriority={fetchPriority} sizes={sizes} className="motion-photo__image" />
     {children}
   </div>;
 }
@@ -97,7 +99,7 @@ function PhotoDialog({ images, index, onIndexChange, onClose }) {
   }} onClick={event => { if (event.target === event.currentTarget) onClose(); }}>
     <div className="photo-viewer__bar"><span>ORBIT / IN FOCUS <small>{String(index + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}</small></span><button type="button" aria-label="Close image gallery" onClick={onClose}><X size={23} /></button></div>
     <div className="photo-viewer__stage">
-      <img key={current.src} src={current.src} alt={current.alt} />
+      <ResponsiveImage key={current.src} src={current.src} alt={current.alt} loading="eager" />
       {images.length > 1 && onIndexChange && <><button type="button" className="photo-viewer__prev" aria-label="Previous image" onClick={() => change(-1)}><ChevronLeft size={24} /></button><button type="button" className="photo-viewer__next" aria-label="Next image" onClick={() => change(1)}><ChevronRight size={24} /></button></>}
     </div>
     <div className="photo-viewer__caption"><span>{current.label || current.alt}</span>{images.length > 1 && <small>Use the arrows to explore</small>}</div>

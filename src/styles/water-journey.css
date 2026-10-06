@@ -34,7 +34,7 @@
 .journey-connecting > svg path { stroke: #0497c1; stroke-width: 1.4; fill: none; stroke-dasharray: 4 4; animation: journey-flow 14s linear infinite; }
 .journey-connecting > span { display: block; color: #0073bc; font-size: 8px; letter-spacing: .13em; font-weight: 650; }
 .journey-connecting > strong { display: block; color: #0a2e46; font-size: 30px; line-height: 1.18; font-weight: 650; letter-spacing: -.04em; margin-top: 18px; }
-.journey-connecting > button { display: flex; align-items: center; justify-content: space-between; width: 100%; border-top: 1px solid #e1edf2; padding-top: 19px; margin-top: 24px; font-size: 10px; color: #0073bc; font-weight: 600; text-align: left; }
+.journey-connecting > a { display: flex; align-items: center; justify-content: space-between; width: 100%; border-top: 1px solid #e1edf2; padding-top: 19px; margin-top: 24px; font-size: 10px; color: #0073bc; font-weight: 600; text-align: left; }
 @keyframes journey-photo-enter { from { opacity: .35; transform: scale(1.09); } to { opacity: 1; transform: scale(1.035); } }
 @keyframes journey-flow { to { stroke-dashoffset: -120; } }
 @media (max-width: 1023px) { .journey-main { height: 480px; }.journey-composition { grid-template-columns: 2fr 1fr; gap: 17px; }.journey-side { gap: 17px; }.journey-connecting { padding: 26px 20px; }.journey-connecting > strong { font-size: 25px; }.journey-tabs > button { font-size: 10px; gap: 8px; }.journey-tabs > button > svg { margin-right: 7px; } }
@@ -46,5 +46,5 @@
  .journey-photo-top { left: 22px; top: 24px; font-size: 8px; }.journey-zoom { width: 39px; height: 39px; right: 18px; top: 18px; }
  .journey-photo-copy { left: 24px; right: 24px; bottom: 30px; }.journey-photo-copy h3 { font-size: 34px; }.journey-photo-copy p { font-size: 11px; max-width: 260px; }.journey-photo-copy > span { font-size: 8px; }
  .journey-photo-frame { display: none; }.journey-side { grid-template-columns: 1fr 1fr; grid-template-rows: auto; gap: 14px; }.journey-next { min-height: 220px; border-radius: 20px; }.journey-next > span { left: 18px; right: 18px; bottom: 20px; }.journey-next strong { font-size: 17px; }.journey-next strong > svg { flex-shrink: 0; width: 15px; }
- .journey-connecting { border-radius: 20px; padding: 25px 16px; }.journey-connecting > span { font-size: 6px; }.journey-connecting > strong { font-size: 23px; }.journey-connecting > button { font-size: 9px; line-height: 1.5; gap: 5px; margin-top: 22px; padding-top: 15px; }.journey-connecting > button > svg { flex-shrink: 0; width: 15px; }
+ .journey-connecting { border-radius: 20px; padding: 25px 16px; }.journey-connecting > span { font-size: 6px; }.journey-connecting > strong { font-size: 23px; }.journey-connecting > a { font-size: 9px; line-height: 1.5; gap: 5px; margin-top: 22px; padding-top: 15px; }.journey-connecting > a > svg { flex-shrink: 0; width: 15px; }
 }

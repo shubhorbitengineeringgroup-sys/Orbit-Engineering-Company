@@ -1,0 +1,15 @@
+# Prepared configuration only. Connecting a repository to Netlify can publish it.
+[build]
+  command = "npm run build:netlify"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # Set true in the production context only when the intended release is public.
+  VITE_INDEXABLE = "false"
+
+[context.deploy-preview.environment]
+  VITE_INDEXABLE = "false"
+
+[context.branch-deploy.environment]
+  VITE_INDEXABLE = "false"

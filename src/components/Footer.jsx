@@ -1,30 +1,35 @@
-import React from 'react';
+import ResponsiveImage from './ResponsiveImage';
+import React, { useEffect, useState } from 'react';
 import { ArrowUp, ArrowUpRight, Mail, MapPin, Phone, ShieldCheck } from 'lucide-react';
 import { siteConfig } from '../config/siteConfig';
+import PageLink from './PageLink';
 
 export default function Footer({ onNavigate, onOpenQuote }) {
   const company = siteConfig.company;
+  const [copyrightYear, setCopyrightYear] = useState(typeof __SITE_BUILD_YEAR__ === 'undefined' ? 2026 : __SITE_BUILD_YEAR__);
+  useEffect(() => { setCopyrightYear(new Date().getFullYear()); }, []);
   return <footer className="orbit-footer">
     <div className="visual-container orbit-footer__top">
       <div className="orbit-footer__brand">
-        <button type="button" onClick={() => onNavigate?.('home')} aria-label="Orbit Engineering home" className="orbit-footer__logo">
-          <img src="/logo.png" alt="" /><span>ORBIT<small>ENGINEERING COMPANY</small></span>
-        </button>
+        <PageLink page="home" onNavigate={onNavigate} aria-label="Orbit Engineering home" className="orbit-footer__logo">
+          <ResponsiveImage src="/logo.png" sizes="80px" alt="" width="951" height="662" loading="lazy" decoding="async" /><span>ORBIT<small>ENGINEERING COMPANY</small></span>
+        </PageLink>
         <p>Engineering cleaner water and smarter infrastructure. From Bhopal, for a better tomorrow.</p>
+        <p>Our child company: <a href={company.childCompanyUrl} target="_blank" rel="noopener noreferrer">{company.childCompanyName}<ArrowUpRight size={13} className="inline ml-1" /></a></p>
         <span className="orbit-footer__cert"><ShieldCheck size={16} /> ISO 9001 · 14001 · 45001</span>
       </div>
       <div>
         <h3>Explore Orbit</h3>
         <nav aria-label="Footer navigation">{[
-          ['About us', 'about'], ['Our products', 'products'], ['Water solutions', 'solutions'], ['Our ecosystem', 'ecosystem'], ['Contact us', 'contact'],
-        ].map(([label, page]) => <button key={page} type="button" onClick={() => onNavigate?.(page)}>{label}<ArrowUpRight size={13} /></button>)}</nav>
+          ['About us', 'about'], ['Our products', 'products'], ['Water solutions', 'solutions'], ['Our ecosystem', 'ecosystem'], ['Choosing an engineering partner', '/guides/choosing-water-treatment-automation-partner-bhopal'], ['Contact us', 'contact'],
+        ].map(([label, page]) => <PageLink key={page} page={page} onNavigate={onNavigate}>{label}<ArrowUpRight size={13} /></PageLink>)}</nav>
       </div>
       <div className="orbit-footer__contact">
         <h3>Let’s talk</h3>
         <a href={'tel:' + company.contact.phonePrimary}><Phone size={15} />{company.contact.phonePrimary}</a>
         <a href={'tel:' + company.contact.phoneSecondary}><Phone size={15} />{company.contact.phoneSecondary}</a>
         <a href={'mailto:' + company.contact.emails[0]}><Mail size={15} />{company.contact.emails[0]}</a>
-        <button type="button" className="orbit-footer__enquire" onClick={onOpenQuote}>Start a conversation<ArrowUpRight size={15} /></button>
+        <PageLink page="contact" onNavigate={onNavigate} onAction={onOpenQuote} className="orbit-footer__enquire">Start a conversation<ArrowUpRight size={15} /></PageLink>
       </div>
       <div className="orbit-footer__visit">
         <h3>Find us in Bhopal</h3>
@@ -35,6 +40,6 @@ export default function Footer({ onNavigate, onOpenQuote }) {
       </div>
     </div>
     <div className="visual-container orbit-footer__signature" aria-hidden="true">WATER. PEOPLE. PLANET.<span>↗</span></div>
-    <div className="visual-container orbit-footer__bottom"><span>© {new Date().getFullYear()} {company.name}. All rights reserved.</span><button type="button" onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })}>Back to top<ArrowUp size={15} /></button></div>
+    <div className="visual-container orbit-footer__bottom"><span>© {copyrightYear} {company.name}. All rights reserved.</span><a href="#main-content">Back to top<ArrowUp size={15} /></a></div>
   </footer>;
 }
